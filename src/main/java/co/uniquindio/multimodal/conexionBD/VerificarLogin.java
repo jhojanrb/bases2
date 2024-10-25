@@ -2,7 +2,7 @@ package co.uniquindio.multimodal.conexionBD;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;  // Importar DriverManager
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class VerificarLogin {
@@ -75,12 +75,15 @@ public class VerificarLogin {
     }
 
     public static void main(String[] args) {
+        // Crear una instancia de VerificarLogin para probar el procedimiento
+        VerificarLogin verificarLogin = new VerificarLogin();
+
         // Probar el procedimiento con un ejemplo
         String email = "jhojan@gmail.com";
         String contrasena = "aleja4523";
-       // String resultado = loginAdministrador(email, contrasena);
+        String resultado = verificarLogin.loginAdministrador(email, contrasena);
 
         // Mostrar el resultado
-        //System.out.println(resultado);
+        System.out.println(resultado);
     }
 }

@@ -4,12 +4,11 @@ import co.uniquindio.multimodal.conexionBD.VerificarLogin;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,57 +16,62 @@ import java.io.IOException;
 public class HelloController {
 
     @FXML
-    private Button btnLogin;
+    private ComboBox<String> userTypeComboBox; // ComboBox para tipo de usuario
 
     @FXML
-    private TextField txtCorreo;
+    private TextField usernameField; // Campo de texto para el nombre de usuario
 
     @FXML
-    private PasswordField txtPassword;
+    private PasswordField passwordField; // Campo de texto para la contraseña
 
-    VerificarLogin vl = new VerificarLogin();
+    @FXML
+    private Text errorText; // Texto para mostrar errores
 
+    // Método de login
     @FXML
     void login(ActionEvent event) {
+        // Obtener los valores ingresados por el usuario
+        String correo = usernameField.getText();
+        String contrasena = passwordField.getText();
 
-        String correo = txtCorreo.getText();
-        String contrasenia = txtPassword.getText();
+        // Validar que los campos no estén vacíos
+        if (correo.isEmpty() || contrasena.isEmpty()) {
+            errorText.setText("Por favor, complete todos los campos.");
+            return;
+        }
 
-        VerificarLogin v = new VerificarLogin();
+        if(userTypeComboBox.getValue() == null){
+            errorText.setText("Por favor, seleccione el tipo de usuario");
+            return;
+        }
 
-        // Llamar al método loginAdministrador y obtener la respuesta
-        String resultado = v.loginAdministrador(correo, contrasenia);
+        // Crear una instancia de VerificarLogin y llamar al método de verificación
+        VerificarLogin verificarLogin = new VerificarLogin();
+        String resultado = verificarLogin.loginAdministrador(correo, contrasena);
 
-        System.out.println(resultado);
-
-        if (resultado != null && resultado.equals("Login exitoso. Bienvenido Administrador")) {
+        // Evaluar la respuesta del procedimiento almacenado
+        if ("Login exitoso. Bienvenido Administrador".equals(resultado)) {
             try {
-                // Mostrar mensaje de login correcto
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Login correcto.");
-                alert.showAndWait();
-
-                // Obtener el Stage actual
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-                // Cargar la nueva vista
-                FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("home-view.fxml"));
+                // Cargar y mostrar la nueva interfaz si el login es exitoso
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home-view.fxml"));
                 Scene scene = new Scene(fxmlLoader.load());
-
-                // Establecer el título y cambiar la escena
-                stage.setTitle("Home");
+                Stage stage = (Stage) usernameField.getScene().getWindow(); // Obtener la ventana actual
                 stage.setScene(scene);
+                stage.setTitle("Home");
                 stage.show();
             } catch (IOException e) {
+                errorText.setText("Error al cargar la interfaz de inicio.");
                 e.printStackTrace();
-                // Manejo de excepciones
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Error al cargar la nueva vista.");
-                alert.showAndWait();
             }
         } else {
-            // Manejar el caso de error en el login
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Login incorrecto.");
-            alert.showAndWait();
+            // Mostrar el mensaje de error si el login falla
+            errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
         }
     }
 
+    // Método para el enlace "¿Olvidó su contraseña?"
+    @FXML
+    void forgot(ActionEvent event) {
+        errorText.setText("Función de recuperación de contraseña no implementada aún.");
+    }
 }
