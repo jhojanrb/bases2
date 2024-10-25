@@ -40,8 +40,12 @@ public class HelloController {
 
         System.out.println(resultado);
 
-        if(resultado != null) {
+        if (resultado != null && resultado.equals("Login exitoso. Bienvenido Administrador")) {
             try {
+                // Mostrar mensaje de login correcto
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Login correcto.");
+                alert.showAndWait();
+
                 // Obtener el Stage actual
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
@@ -61,10 +65,9 @@ public class HelloController {
             }
         } else {
             // Manejar el caso de error en el login
-            Alert alert = new Alert(Alert.AlertType.WARNING, resultado);
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Login incorrecto.");
             alert.showAndWait();
         }
-
     }
 
 }
