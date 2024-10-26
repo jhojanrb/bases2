@@ -30,7 +30,6 @@ public class HelloController {
     // Método de login
     @FXML
     void login(ActionEvent event) {
-        // Obtener los valores ingresados por el usuario
         String correo = usernameField.getText();
         String contrasena = passwordField.getText();
 
@@ -40,32 +39,65 @@ public class HelloController {
             return;
         }
 
-        if(userTypeComboBox.getValue() == null){
+        // Validar selección en el ComboBox
+        String userType = userTypeComboBox.getValue();
+        if (userType == null) {
             errorText.setText("Por favor, seleccione el tipo de usuario");
             return;
         }
 
-        // Crear una instancia de VerificarLogin y llamar al método de verificación
+        // Crear instancia de VerificarLogin
         VerificarLogin verificarLogin = new VerificarLogin();
-        String resultado = verificarLogin.loginAdministrador(correo, contrasena);
+        String resultado;
 
-        // Evaluar la respuesta del procedimiento almacenado
-        if ("Login exitoso. Bienvenido Administrador".equals(resultado)) {
-            try {
-                // Cargar y mostrar la nueva interfaz si el login es exitoso
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home-view.fxml"));
-                Scene scene = new Scene(fxmlLoader.load());
-                Stage stage = (Stage) usernameField.getScene().getWindow(); // Obtener la ventana actual
-                stage.setScene(scene);
-                stage.setTitle("Home");
-                stage.show();
-            } catch (IOException e) {
-                errorText.setText("Error al cargar la interfaz de inicio.");
-                e.printStackTrace();
+        try {
+            // Verificar el tipo de usuario seleccionado
+            if (userType.equals("Administrador")) {
+                // Intento de login para Administrador
+                resultado = verificarLogin.loginAdministrador(correo, contrasena);
+
+                // Evaluar respuesta para administrador
+                if ("Login exitoso. Bienvenido Administrador".equals(resultado)) {
+                    cargarVista("home-view.fxml", "Home - Administrador");
+                } else {
+                    errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
+                }
+
+            } else if (userType.equals("Vendedor")) {
+                // Intento de login para Vendedor (requiere ID de vendedor)
+                try {
+                    int idVendedor = Integer.parseInt(passwordField.getText()); // Ejemplo simple para capturar ID como contraseña
+                    resultado = verificarLogin.loginVendedor(correo, idVendedor);
+
+                    // Evaluar respuesta para vendedor
+                    if ("Login exitoso. Bienvenido".equals(resultado)) {
+                        cargarVista("homeVendedor-view.fxml", "Home - Vendedor");
+                    } else {
+                        errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
+                    }
+
+                } catch (NumberFormatException e) {
+                    errorText.setText("El ID del vendedor debe ser numérico.");
+                }
             }
-        } else {
-            // Mostrar el mensaje de error si el login falla
-            errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
+        } catch (Exception e) {
+            errorText.setText("Error en el proceso de login.");
+            e.printStackTrace();
+        }
+    }
+
+    // Método auxiliar para cargar y mostrar una vista específica
+    private void cargarVista(String vista, String titulo) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(vista));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = (Stage) usernameField.getScene().getWindow(); // Obtener la ventana actual
+            stage.setScene(scene);
+            stage.setTitle(titulo);
+            stage.show();
+        } catch (IOException e) {
+            errorText.setText("Error al cargar la interfaz de " + titulo.toLowerCase() + ".");
+            e.printStackTrace();
         }
     }
 

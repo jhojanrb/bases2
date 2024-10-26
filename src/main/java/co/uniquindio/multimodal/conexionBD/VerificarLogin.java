@@ -74,16 +74,55 @@ public class VerificarLogin {
         return respuesta;  // Devolver la respuesta obtenida del procedimiento
     }
 
+    // Método para comprobar el procedimiento login_vendedor
+
+
+    public String loginVendedor(String email, int idVendedor) {
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+        String respuesta = null;
+
+        try {
+            connection = getConnection();
+            String sql = "{ call login_vendedor(?, ?, ?) }";
+            callableStatement = connection.prepareCall(sql);
+
+            callableStatement.setString(1, email);
+            callableStatement.setInt(2, idVendedor);
+            callableStatement.registerOutParameter(3, java.sql.Types.VARCHAR);
+
+            callableStatement.execute();
+            respuesta = callableStatement.getString(3);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (callableStatement != null) callableStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return respuesta;
+    }
+
     public static void main(String[] args) {
         // Crear una instancia de VerificarLogin para probar el procedimiento
         VerificarLogin verificarLogin = new VerificarLogin();
 
         // Probar el procedimiento con un ejemplo
-        String email = "jhojan@gmail.com";
+        /**String email = "jhojan@gmail.com";
         String contrasena = "aleja4523";
-        String resultado = verificarLogin.loginAdministrador(email, contrasena);
+        String resultado = verificarLogin.loginAdministrador(email, contrasena);**/
+
+        // Prueba login de vendedor
+        String vendedorEmail = "samuel@gmail.com";
+        int vendedorId = 1005319; // Ejemplo de ID de vendedor
+        System.out.println(verificarLogin.loginVendedor(vendedorEmail, vendedorId));
 
         // Mostrar el resultado
-        System.out.println(resultado);
+        //System.out.println(resultado);
     }
 }
