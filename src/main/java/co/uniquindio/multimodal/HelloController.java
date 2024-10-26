@@ -79,12 +79,32 @@ public class HelloController {
                 } catch (NumberFormatException e) {
                     errorText.setText("El ID del vendedor debe ser numérico.");
                 }
+
+            } else if (userType.equals("Cliente")) {
+                // Intento de login para Cliente (requiere ID de cliente)
+                try {
+                    int idCliente = Integer.parseInt(passwordField.getText()); // Ejemplo simple para capturar ID como contraseña
+                    resultado = verificarLogin.loginCliente(correo, idCliente);
+
+                    // Evaluar respuesta para cliente
+                    if ("Login exitoso. Bienvenido cliente".equals(resultado)) {
+                        cargarVista("homeCliente-view.fxml", "Home - Cliente");
+                    } else {
+                        errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
+                    }
+
+                } catch (NumberFormatException e) {
+                    errorText.setText("El ID del cliente debe ser numérico.");
+                }
             }
+
         } catch (Exception e) {
             errorText.setText("Error en el proceso de login.");
             e.printStackTrace();
         }
     }
+
+
 
     // Método auxiliar para cargar y mostrar una vista específica
     private void cargarVista(String vista, String titulo) {

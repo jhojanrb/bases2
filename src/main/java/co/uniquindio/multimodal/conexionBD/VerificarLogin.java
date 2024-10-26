@@ -76,6 +76,12 @@ public class VerificarLogin {
 
     // Método para comprobar el procedimiento login_vendedor
 
+    /**
+     * LOGIN VENDEDOR
+     * @param email
+     * @param idVendedor
+     * @return
+     */
 
     public String loginVendedor(String email, int idVendedor) {
         Connection connection = null;
@@ -108,6 +114,46 @@ public class VerificarLogin {
         return respuesta;
     }
 
+    /**
+     * LOGIN CLIENTE
+     * @param email
+     * @param idCliente
+     * @return
+     */
+
+    public String loginCliente(String email, int idCliente) {
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+        String respuesta = null;
+
+        try {
+            connection = getConnection();
+            String sql = "{ call login_cliente(?, ?, ?) }";
+            callableStatement = connection.prepareCall(sql);
+
+            callableStatement.setString(1, email);
+            callableStatement.setInt(2, idCliente);
+            callableStatement.registerOutParameter(3, java.sql.Types.VARCHAR);
+
+            callableStatement.execute();
+            respuesta = callableStatement.getString(3);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (callableStatement != null) callableStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return respuesta;
+    }
+
+
+
     public static void main(String[] args) {
         // Crear una instancia de VerificarLogin para probar el procedimiento
         VerificarLogin verificarLogin = new VerificarLogin();
@@ -118,9 +164,14 @@ public class VerificarLogin {
         String resultado = verificarLogin.loginAdministrador(email, contrasena);**/
 
         // Prueba login de vendedor
-        String vendedorEmail = "samuel@gmail.com";
+        /**String vendedorEmail = "samuel@gmail.com";
         int vendedorId = 1005319; // Ejemplo de ID de vendedor
-        System.out.println(verificarLogin.loginVendedor(vendedorEmail, vendedorId));
+        System.out.println(verificarLogin.loginVendedor(vendedorEmail, vendedorId));**/
+
+        // Prueba login de CLIENTE
+        String clienteEmail = "lore@gmail.com";
+        int clienteId = 1099682; // Ejemplo de ID de vendedor
+        System.out.println(verificarLogin.loginCliente(clienteEmail, clienteId));
 
         // Mostrar el resultado
         //System.out.println(resultado);

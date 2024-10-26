@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="co.uniquindio.multimodal.HomeClienteController">
+    <top>
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Bienvenido a MLM Shop" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="clientNameLabel" style="-fx-text-fill: white;" text="Hola, [Nombre del Cliente]" />
+            <Button style="-fx-background-color: #2980b9;" text="Mi Carrito">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20">
+                        <Image url="@../../../images/sparking_zero-1.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button style="-fx-background-color: #e74c3c;" text="Cerrar Sesión" />
+        </HBox>
+    </top>
+
+    <left>
+        <VBox spacing="10" style="-fx-background-color: #2980b9; -fx-padding: 10;">
+            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Inicio" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Catálogo de Productos" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Mis Pedidos" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Mi Perfil" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Contacto" />
+        </VBox>
+    </left>
+
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true">
+            <VBox spacing="20" style="-fx-padding: 20;">
+                <TitledPane expanded="true" text="Productos Destacados">
+                    <GridPane hgap="10" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="100" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="100" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="100" />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="150" prefHeight="150" vgrow="SOMETIMES" />
+                        </rowConstraints>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="0">
+                            <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label style="-fx-font-weight: bold;" text="Producto 1" />
+                            <Label text="19.99" />
+                            <Button style="-fx-background-color: #2ecc71;" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="1">
+                            <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label style="-fx-font-weight: bold;" text="Producto 2" />
+                            <Label text="24.99" />
+                            <Button style="-fx-background-color: #2ecc71;" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="2">
+                            <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label style="-fx-font-weight: bold;" text="Producto 3" />
+                            <Label text="29.99" />
+                            <Button style="-fx-background-color: #2ecc71;" text="Añadir al Carrito" />
+                        </VBox>
+                    </GridPane>
+                </TitledPane>
+
+                <TitledPane expanded="true" text="Mis Pedidos Recientes">
+                    <TableView fx:id="recentOrdersTable" prefHeight="200">
+                        <columns>
+                            <TableColumn prefWidth="100" text="Nº Pedido" />
+                            <TableColumn prefWidth="100" text="Fecha" />
+                            <TableColumn prefWidth="100" text="Total" />
+                            <TableColumn prefWidth="150" text="Estado" />
+                        </columns>
+                    </TableView>
+                </TitledPane>
+
+                <TitledPane expanded="true" text="Estado de Mis Pedidos Actuales">
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label style="-fx-font-weight: bold;" text="Pedido #1234" />
+                            <ProgressBar prefWidth="200" progress="0.75" />
+                            <Label text="En tránsito" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label style="-fx-font-weight: bold;" text="Pedido #1235" />
+                            <ProgressBar prefWidth="200" progress="0.25" />
+                            <Label text="Procesando" />
+                        </HBox>
+                    </VBox>
+                </TitledPane>
+
+                <TitledPane expanded="true" text="Ofertas Especiales">
+                    <ListView fx:id="specialOffersListView" prefHeight="150" />
+                </TitledPane>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #3498db; -fx-padding: 5;">
+            <Label style="-fx-text-fill: white;" text="© 2024 MLM Shop. Todos los derechos reservados." />
+        </HBox>
+    </bottom>
+</BorderPane>
