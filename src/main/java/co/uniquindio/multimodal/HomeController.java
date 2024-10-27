@@ -69,6 +69,12 @@ public class HomeController {
         salesSummaryTable.setItems(data);
     }
 
+    private void actualizarEstadisticas() {
+        txtTotalVendedores.setText(String.valueOf(verificarLogin.obtenerTotalVendedores()));
+        txtTotalVentas.setText(String.valueOf(verificarLogin.obtenerVentasTotales()));
+        txtRegistrosMes.setText(String.valueOf(verificarLogin.obtenerRegistrosMes()));
+    }
+
     @FXML
     private Label txtRegistrosMes;
 
@@ -81,6 +87,7 @@ public class HomeController {
     @FXML
     private void initialize(){
         loadSalesSummary();
+        actualizarEstadisticas();
     }
 
     @FXML

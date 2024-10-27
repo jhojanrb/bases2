@@ -160,6 +160,11 @@ public class VerificarLogin {
         return respuesta;
     }
 
+    /**
+     * RESUMEN VENTAS EN EL TABLEVIEW ADMIN
+     * @return
+     */
+
     // Método para obtener el resumen de ventas por nivel
     public List<SalesSummary> obtenerResumenVentasNivel() {
         List<SalesSummary> data = new ArrayList<>();
@@ -193,6 +198,59 @@ public class VerificarLogin {
         }
 
         return data;
+    }
+
+    // Métodos para obtener los datos
+
+    public int obtenerTotalVendedores() {
+        int totalVendedores = 0;
+        String sql = "SELECT COUNT(*) AS total FROM Vendedor";
+
+        try (Connection connection = getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                totalVendedores = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalVendedores;
+    }
+
+    public int obtenerVentasTotales() {
+        int ventasTotales = 0;
+        String sql = "SELECT SUM(num_ventas) AS total FROM Vendedor";
+
+        try (Connection connection = getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                ventasTotales = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ventasTotales;
+    }
+
+    public int obtenerRegistrosMes() {
+        int registrosMes = 0;
+        String sql = "SELECT COUNT(*) AS total FROM Vendedor WHERE EXTRACT(MONTH FROM fecha_ingreso) = EXTRACT(MONTH FROM SYSDATE)";
+
+        try (Connection connection = getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                registrosMes = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return registrosMes;
     }
 
 
