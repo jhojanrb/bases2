@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="co.uniquindio.multimodal.HomeClienteController">
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.HomeClienteController">
     <top>
         <HBox alignment="CENTER_LEFT" style="-fx-background-color: #3498db; -fx-padding: 10;">
             <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Bienvenido a MLM Shop" />
@@ -31,7 +31,7 @@
                     </ImageView>
                 </graphic>
             </Button>
-            <Button style="-fx-background-color: #e74c3c;" text="Cerrar Sesión" />
+            <Button fx:id="btnCerrarSesion" onAction="#cerrarSesion" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Cerrar Sesión" />
         </HBox>
     </top>
 

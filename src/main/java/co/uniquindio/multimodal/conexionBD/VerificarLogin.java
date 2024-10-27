@@ -1,9 +1,10 @@
 package co.uniquindio.multimodal.conexionBD;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import oracle.jdbc.OracleTypes;
+
 
 public class VerificarLogin {
 
@@ -35,6 +36,13 @@ public class VerificarLogin {
     }
 
     // Método para comprobar el procedimiento login_administrador
+
+    /**
+     * LOGIN ADMINISTRADOR
+     * @param email
+     * @param contrasena
+     * @return
+     */
     public String loginAdministrador(String email, String contrasena) {
         Connection connection = null;
         CallableStatement callableStatement = null;
@@ -152,7 +160,46 @@ public class VerificarLogin {
         return respuesta;
     }
 
+    // Método para obtener el resumen de ventas por nivel
+    public List<SalesSummary> obtenerResumenVentasNivel() {
+        List<SalesSummary> data = new ArrayList<>();
+        Connection connection = null;
+        CallableStatement stmt = null;
 
+        try {
+            connection = getConnection();
+            stmt = connection.prepareCall("{call obtener_resumen_ventas_nivel(?)}");
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+            while (rs.next()) {
+                data.add(new SalesSummary(
+                        rs.getString("nivel"),
+                        rs.getInt("numero_vendedores"),
+                        rs.getInt("ventas_totales")
+                ));
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return data;
+    }
+
+
+    /**
+     * MAIN PRUEBAS
+     * @param args
+     */
 
     public static void main(String[] args) {
         // Crear una instancia de VerificarLogin para probar el procedimiento

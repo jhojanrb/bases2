@@ -1,83 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.*?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.HomeController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="co.uniquindio.multimodal.HomeVendedorController">
     <top>
         <HBox alignment="CENTER_LEFT" style="-fx-background-color: #2ecc71; -fx-padding: 10;">
-            <Label text="Panel de Vendedor MLM" style="-fx-text-fill: white; -fx-font-size: 20;"/>
+            <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Panel de Vendedor MLM" />
             <Region HBox.hgrow="ALWAYS" />
-            <Label fx:id="vendorNameLabel" text="Bienvenido, [Nombre del Vendedor]" style="-fx-text-fill: white;"/>
-            <Button text="Cerrar Sesión" style="-fx-background-color: #e74c3c;"/>
+            <Label fx:id="vendorNameLabel" style="-fx-text-fill: white;" text="Bienvenido, [Nombre del Vendedor]" />
+            <Button fx:id="btnCerrarSesion" onAction="#cerrarSesion" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Cerrar Sesión" />
         </HBox>
     </top>
 
     <left>
         <VBox spacing="10" style="-fx-background-color: #27ae60; -fx-padding: 10;">
-            <Button text="Dashboard" maxWidth="Infinity" style="-fx-background-color: #2ecc71;"/>
-            <Button text="Catálogo de Productos" maxWidth="Infinity" style="-fx-background-color: #2ecc71;"/>
-            <Button text="Mi Red de Afiliados" maxWidth="Infinity" style="-fx-background-color: #2ecc71;"/>
-            <Button text="Mis Comisiones" maxWidth="Infinity" style="-fx-background-color: #2ecc71;"/>
-            <Button text="Realizar Pedido" maxWidth="Infinity" style="-fx-background-color: #2ecc71;"/>
-            <Button text="Historial de Ventas" maxWidth="Infinity" style="-fx-background-color: #2ecc71;"/>
+            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Dashboard" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Catálogo de Productos" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Mi Red de Afiliados" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Mis Comisiones" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Realizar Pedido" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Historial de Ventas" />
         </VBox>
     </left>
 
     <center>
-        <ScrollPane fitToWidth="true" fitToHeight="true">
+        <ScrollPane fitToHeight="true" fitToWidth="true">
             <VBox spacing="20" style="-fx-padding: 20;">
                 <HBox spacing="20">
-                    <VBox styleClass="stat-box" style="-fx-background-color: #3498db; -fx-padding: 10; -fx-background-radius: 5;">
-                        <Label text="Ventas del Mes" style="-fx-text-fill: white;"/>
-                        <Label fx:id="monthSalesLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
+                    <VBox style="-fx-background-color: #3498db; -fx-padding: 10; -fx-background-radius: 5;" styleClass="stat-box">
+                        <Label style="-fx-text-fill: white;" text="Ventas del Mes" />
+                        <Label fx:id="monthSalesLabel" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;" text="0" />
                     </VBox>
-                    <VBox styleClass="stat-box" style="-fx-background-color: #e67e22; -fx-padding: 10; -fx-background-radius: 5;">
-                        <Label text="Comisiones del Mes" style="-fx-text-fill: white;"/>
-                        <Label fx:id="monthCommissionsLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
+                    <VBox style="-fx-background-color: #e67e22; -fx-padding: 10; -fx-background-radius: 5;" styleClass="stat-box">
+                        <Label style="-fx-text-fill: white;" text="Comisiones del Mes" />
+                        <Label fx:id="monthCommissionsLabel" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;" text="0" />
                     </VBox>
-                    <VBox styleClass="stat-box" style="-fx-background-color: #9b59b6; -fx-padding: 10; -fx-background-radius: 5;">
-                        <Label text="Afiliados Directos" style="-fx-text-fill: white;"/>
-                        <Label fx:id="directAffiliatesLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
+                    <VBox style="-fx-background-color: #9b59b6; -fx-padding: 10; -fx-background-radius: 5;" styleClass="stat-box">
+                        <Label style="-fx-text-fill: white;" text="Afiliados Directos" />
+                        <Label fx:id="directAffiliatesLabel" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;" text="0" />
                     </VBox>
                 </HBox>
 
-                <TitledPane text="Progreso hacia el Siguiente Nivel" expanded="true">
+                <TitledPane expanded="true" text="Progreso hacia el Siguiente Nivel">
                     <VBox spacing="10">
-                        <Label fx:id="currentLevelLabel" text="Nivel Actual: PLATINO"/>
-                        <Label fx:id="nextLevelLabel" text="Siguiente Nivel: BRONZE"/>
-                        <ProgressBar fx:id="levelProgressBar" progress="0.6" maxWidth="Infinity"/>
-                        <Label fx:id="progressDetailsLabel" text="60/100 ventas para el siguiente nivel"/>
+                        <Label fx:id="currentLevelLabel" text="Nivel Actual: PLATINO" />
+                        <Label fx:id="nextLevelLabel" text="Siguiente Nivel: BRONZE" />
+                        <ProgressBar fx:id="levelProgressBar" maxWidth="Infinity" progress="0.6" />
+                        <Label fx:id="progressDetailsLabel" text="60/100 ventas para el siguiente nivel" />
                     </VBox>
                 </TitledPane>
 
-                <TitledPane text="Rendimiento de Ventas" expanded="true">
+                <TitledPane expanded="true" text="Rendimiento de Ventas">
                     <LineChart fx:id="salesPerformanceChart">
                         <xAxis>
-                            <CategoryAxis label="Mes"/>
+                            <CategoryAxis label="Mes" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis label="Ventas ($)"/>
+                            <NumberAxis label="Ventas ($)" />
                         </yAxis>
                     </LineChart>
                 </TitledPane>
 
-                <TitledPane text="Últimas Ventas" expanded="true">
+                <TitledPane expanded="true" text="Últimas Ventas">
                     <TableView fx:id="recentSalesTable" prefHeight="200">
                         <columns>
-                            <TableColumn text="Fecha" prefWidth="100"/>
-                            <TableColumn text="Producto" prefWidth="200"/>
-                            <TableColumn text="Cantidad" prefWidth="100"/>
-                            <TableColumn text="Total" prefWidth="100"/>
+                            <TableColumn prefWidth="100" text="Fecha" />
+                            <TableColumn prefWidth="200" text="Producto" />
+                            <TableColumn prefWidth="100" text="Cantidad" />
+                            <TableColumn prefWidth="100" text="Total" />
                         </columns>
                     </TableView>
                 </TitledPane>
 
-                <TitledPane text="Notificaciones" expanded="true">
-                    <ListView fx:id="notificationListView" prefHeight="150"/>
+                <TitledPane expanded="true" text="Notificaciones">
+                    <ListView fx:id="notificationListView" prefHeight="150" />
                 </TitledPane>
             </VBox>
         </ScrollPane>
@@ -85,7 +95,7 @@
 
     <bottom>
         <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #27ae60; -fx-padding: 5;">
-            <Label text="© 2024 Sistema MLM. Todos los derechos reservados." style="-fx-text-fill: white;"/>
+            <Label style="-fx-text-fill: white;" text="© 2024 Sistema MLM. Todos los derechos reservados." />
         </HBox>
     </bottom>
 </BorderPane>

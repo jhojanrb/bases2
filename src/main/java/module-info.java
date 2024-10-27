@@ -1,11 +1,14 @@
 module co.uniquindio.multimodal {
     requires javafx.controls;
     requires javafx.fxml;
-
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
+    requires ojdbc8;
 
     opens co.uniquindio.multimodal to javafx.fxml;
     exports co.uniquindio.multimodal;
+
+    // Abre el paquete conexionBD para javafx.base, permitiendo el acceso a la clase SalesSummary
+    opens co.uniquindio.multimodal.conexionBD to javafx.base;
 }
