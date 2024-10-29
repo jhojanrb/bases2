@@ -253,6 +253,70 @@ public class VerificarLogin {
         return registrosMes;
     }
 
+    /**
+     * OBTENER SOLICITUDES PENDIENTES DE LOS VENDEDORES
+     * @return
+     */
+
+    public List<Vendedor> obtenerSolicitudesPendientes() {
+        List<Vendedor> solicitudes = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_solicitudes_pendientes(?)}")) {
+
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+            while (rs.next()) {
+                Vendedor vendedor = new Vendedor(
+                        rs.getInt("id_vendedor"),
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("email"),
+                        rs.getString("estado_vendedor") // Añade el nombre del estado como String
+                );
+                solicitudes.add(vendedor);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return solicitudes;
+    }
+
+
+    /**
+     * APROBAR VENDEDOR
+     * @param idVendedor
+     */
+
+    public void aprobarVendedor(int idVendedor) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call aprobar_vendedor(?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * RECHAZAR VENDEDOR
+     * @param idVendedor
+     */
+    public void rechazarVendedor(int idVendedor) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call rechazar_vendedor(?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * MAIN PRUEBAS

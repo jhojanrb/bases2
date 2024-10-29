@@ -5,6 +5,7 @@ module co.uniquindio.multimodal {
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
     requires ojdbc8;
+    requires java.desktop;
 
     opens co.uniquindio.multimodal to javafx.fxml;
     exports co.uniquindio.multimodal;

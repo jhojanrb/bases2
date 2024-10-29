@@ -52,7 +52,7 @@
 
             <TitledPane expanded="true" text="Acciones Rápidas">
                <VBox spacing="10">
-                  <Button fx:id="btnAprobarVendedores" maxWidth="Infinity" onAction="#aprobarVendedor" text="Aprobar Nuevos Vendedores" />
+                  <Button fx:id="btnAprobarVendedores" maxWidth="Infinity" onAction="#aprobarVendedor" style=" -fx-cursor: hand;" text="Aprobar Nuevos Vendedores" />
                   <Button fx:id="btnGestionarPromocion" maxWidth="Infinity" onAction="#gestionarPromocion" text="Gestionar Promociones" />
                   <Button maxWidth="Infinity" text="Revisar Solicitudes de Pago" />
                </VBox>

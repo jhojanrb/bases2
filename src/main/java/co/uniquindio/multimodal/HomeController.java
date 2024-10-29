@@ -92,8 +92,23 @@ public class HomeController {
 
     @FXML
     void aprobarVendedor(ActionEvent event) {
+        try {
+            // Cargar la interfaz de inicio de sesión
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PopUpAprobarVend-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
 
+            // Obtener la ventana actual y establecer la nueva escena
+            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Aprobar vendedores");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar la interfaz de inicio de sesión.");
+        }
     }
+
+
 
     @FXML
     void catalogoProductos(ActionEvent event) {
