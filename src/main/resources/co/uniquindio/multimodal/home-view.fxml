@@ -22,7 +22,7 @@
    </top>
 
    <left>
-      <VBox spacing="10" style="-fx-background-color: #2c3e50; -fx-padding: 10;">
+      <VBox spacing="10" style="-fx-background-color: #2c3e50; -fx-padding: 10;" BorderPane.alignment="CENTER">
          <Button fx:id="btnDashboard" maxWidth="Infinity" onAction="#dashboard" style="-fx-background-color: #5e84aa;" text="Dashboard" />
          <Button fx:id="btnGestionVendedores" maxWidth="Infinity" onAction="#gestionVendedores" style="-fx-background-color: #34495e;" text="Gestión de Vendedores" />
          <Button fx:id="btnCatalogoProductos" maxWidth="Infinity" onAction="#catalogoProductos" style="-fx-background-color: #34495e;" text="Catálogo de Productos" />

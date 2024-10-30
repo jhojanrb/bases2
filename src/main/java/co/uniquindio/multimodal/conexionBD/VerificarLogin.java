@@ -253,6 +253,28 @@ public class VerificarLogin {
         return registrosMes;
     }
 
+    public String obtenerNombreCliente(int clienteId) {
+        String nombreCliente = null;
+        String sql = "SELECT nombre FROM Cliente WHERE id_cliente = ?"; // nombre correcto de la columna
+
+        try (Connection connection = getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Establecer el parámetro en la consulta
+            pstmt.setInt(1, clienteId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    nombreCliente = rs.getString("nombre"); // nombre de la columna correspondiente
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nombreCliente;
+    }
+
+
     /**
      * OBTENER SOLICITUDES PENDIENTES DE LOS VENDEDORES
      * @return

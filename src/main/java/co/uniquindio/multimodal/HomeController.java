@@ -14,6 +14,16 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/*------------------- PANTALLA COMPLETA*/
+
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+
+/*--------------------*/
+
 public class HomeController {
 
     @FXML
@@ -73,6 +83,7 @@ public class HomeController {
         txtTotalVendedores.setText(String.valueOf(verificarLogin.obtenerTotalVendedores()));
         txtTotalVentas.setText(String.valueOf(verificarLogin.obtenerVentasTotales()));
         txtRegistrosMes.setText(String.valueOf(verificarLogin.obtenerRegistrosMes()));
+
     }
 
     @FXML
@@ -97,11 +108,24 @@ public class HomeController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PopUpAprobarVend-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
 
-            // Obtener la ventana actual y establecer la nueva escena
-            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Aprobar vendedores");
-            stage.show();
+            // Obtener el tamaño de la pantalla completa
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Crear un nuevo Stage y establecer la nueva escena con las dimensiones de la pantalla
+            Stage newStage = new Stage();
+            newStage.setTitle("Aprobar Vendedores");
+            newStage.setScene(scene);
+            newStage.setX(screenBounds.getMinX());
+            newStage.setY(screenBounds.getMinY());
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+            // Mostrar el nuevo Stage en pantalla completa
+            newStage.show();
+
+            // Cerrar el Stage actual si es necesario
+            Stage currentStage = (Stage) btnCerrarSesion.getScene().getWindow();
+            currentStage.close();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error al cargar la interfaz de inicio de sesión.");
@@ -122,11 +146,24 @@ public class HomeController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
 
-            // Obtener la ventana actual y establecer la nueva escena
-            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Login");
-            stage.show();
+            // Obtener el tamaño de la pantalla completa
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Crear un nuevo Stage y establecer la nueva escena con las dimensiones de la pantalla
+            Stage newStage = new Stage();
+            newStage.setTitle("Login");
+            newStage.setScene(scene);
+            newStage.setX(screenBounds.getMinX());
+            newStage.setY(screenBounds.getMinY());
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+            // Mostrar el nuevo Stage en pantalla completa
+            newStage.show();
+
+            // Cerrar el Stage actual si es necesario
+            Stage currentStage = (Stage) btnCerrarSesion.getScene().getWindow();
+            currentStage.close();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error al cargar la interfaz de inicio de sesión.");

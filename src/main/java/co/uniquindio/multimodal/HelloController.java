@@ -10,6 +10,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Screen;
+import javafx.geometry.Rectangle2D;
 
 import java.io.IOException;
 
@@ -110,15 +112,34 @@ public class HelloController {
     private void cargarVista(String vista, String titulo) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(vista));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = (Stage) usernameField.getScene().getWindow(); // Obtener la ventana actual
-            stage.setScene(scene);
-            stage.setTitle(titulo);
-            stage.show();
+
+            // Obtiene el tamaño de la pantalla
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Crear una nueva escena con el tamaño de la pantalla completa
+            Scene scene = new Scene(fxmlLoader.load(), screenBounds.getWidth(), screenBounds.getHeight());
+
+            // Crear un nuevo Stage
+            Stage newStage = new Stage();
+            newStage.setTitle(titulo);
+            newStage.setScene(scene);
+
+            // Maximiza la nueva ventana para ocupar toda la pantalla
+            newStage.setMaximized(true);
+
+
+            // Mostrar la nueva ventana
+            newStage.show();
+
+            // Cierra el Stage actual si deseas
+            Stage currentStage = (Stage) usernameField.getScene().getWindow();
+            currentStage.close();
+
         } catch (IOException e) {
             errorText.setText("Error al cargar la interfaz de " + titulo.toLowerCase() + ".");
             e.printStackTrace();
         }
+
     }
 
     // Método para el enlace "¿Olvidó su contraseña?"
