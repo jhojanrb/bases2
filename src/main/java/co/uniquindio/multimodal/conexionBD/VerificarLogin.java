@@ -339,6 +339,231 @@ public class VerificarLogin {
         }
     }
 
+    /**
+     * cargarPromociones
+     * @return
+     */
+
+    public List<Promocion> obtenerPromocionesActivas() {
+        List<Promocion> promociones = new ArrayList<>();
+        Connection connection = null;
+        CallableStatement stmt = null;
+
+        try {
+            connection = getConnection();
+            System.out.println("Conexión establecida.");
+
+            stmt = connection.prepareCall("{call cargar_promociones(?)}");
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            System.out.println("Procedimiento ejecutado.");
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+
+            while (rs.next()) {
+                Promocion promocion = new Promocion(
+                        rs.getString("nombre"),
+                        rs.getDate("inicio"),
+                        rs.getDate("fin"),
+                        rs.getFloat("gold_porcentaje"),
+                        rs.getFloat("plate_porcentaje"),
+                        rs.getFloat("bronze_porcentaje"),
+                        rs.getFloat("platino_porcentaje")
+                );
+                promociones.add(promocion);
+                System.out.println("Promoción cargada: " + promocion.getNombre());
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return promociones;
+    }
+
+
+    /**
+     * historialPromociones
+     * @return
+     */
+    public List<Promocion> obtenerHistorialPromociones() {
+        List<Promocion> historialPromociones = new ArrayList<>();
+        Connection connection = null;
+        CallableStatement stmt = null;
+
+        try {
+            connection = getConnection();
+            stmt = connection.prepareCall("{call cargar_historial_promociones(?)}");
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+
+            while (rs.next()) {
+                Promocion promocion = new Promocion(
+                        rs.getString("id"), // Nombre de columna ajustado para historial
+                        rs.getDate("inicio"),
+                        rs.getDate("fin"),
+                        rs.getFloat("gold_porcentaje"),
+                        rs.getFloat("plate_porcentaje"),
+                        rs.getFloat("bronze_porcentaje"),
+                        rs.getFloat("platino_porcentaje")
+                );
+                historialPromociones.add(promocion);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return historialPromociones;
+    }
+
+    /**
+     * CREAR PROMOCION
+     * @param idPromocion
+     * @param fechaInicio
+     * @param fechaFin
+     * @param descuentoGold
+     * @param descuentoPlate
+     * @param descuentoBronze
+     * @param descuentoPlatino
+     * @return
+     */
+
+    public boolean crearPromocion(String idPromocion, Date fechaInicio, Date fechaFin, float descuentoGold, float descuentoPlate, float descuentoBronze, float descuentoPlatino) {
+        Connection connection = null;
+        CallableStatement stmt = null;
+        boolean success = false;
+
+        try {
+            connection = getConnection();
+            stmt = connection.prepareCall("{call crear_promocion(?, ?, ?, ?, ?, ?, ?)}");
+
+            stmt.setString(1, idPromocion);
+            stmt.setDate(2, fechaInicio);
+            stmt.setDate(3, fechaFin);
+            stmt.setFloat(4, descuentoGold);
+            stmt.setFloat(5, descuentoPlate);
+            stmt.setFloat(6, descuentoBronze);
+            stmt.setFloat(7, descuentoPlatino);
+
+            stmt.execute();
+            success = true; // Si no hubo excepciones, el proceso fue exitoso
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            success = false;
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return success;
+    }
+
+    /**
+     * EDITAR PROMOCION DE LA TABLA
+     * @param idPromocion
+     * @param fechaInicio
+     * @param fechaFin
+     * @param descuentoGold
+     * @param descuentoPlate
+     * @param descuentoBronze
+     * @param descuentoPlatino
+     * @return
+     */
+
+    public boolean editarPromocion(String idPromocion, Date fechaInicio, Date fechaFin, float descuentoGold, float descuentoPlate, float descuentoBronze, float descuentoPlatino) {
+        Connection connection = null;
+        CallableStatement stmt = null;
+        boolean success = false;
+
+        try {
+            connection = getConnection();
+            stmt = connection.prepareCall("{call editar_promocion(?, ?, ?, ?, ?, ?, ?)}");
+
+            stmt.setString(1, idPromocion);
+            stmt.setDate(2, fechaInicio);
+            stmt.setDate(3, fechaFin);
+            stmt.setFloat(4, descuentoGold);
+            stmt.setFloat(5, descuentoPlate);
+            stmt.setFloat(6, descuentoBronze);
+            stmt.setFloat(7, descuentoPlatino);
+
+            stmt.execute();
+            success = true; // Indica que la edición fue exitosa
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            success = false;
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return success;
+    }
+
+    /**
+     * ELIMINAR UNA PROMOCION DE LA TABLA
+     * @param idPromocion
+     * @return
+     */
+
+    public boolean eliminarPromocion(String idPromocion) {
+        Connection connection = null;
+        CallableStatement stmt = null;
+        boolean success = false;
+
+        try {
+            connection = getConnection();
+            stmt = connection.prepareCall("{call eliminar_promocion(?)}");
+
+            stmt.setString(1, idPromocion);
+            stmt.execute();
+
+            success = true; // Si no hubo excepciones, la eliminación fue exitosa
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            success = false;
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return success;
+    }
+
+
 
     /**
      * MAIN PRUEBAS

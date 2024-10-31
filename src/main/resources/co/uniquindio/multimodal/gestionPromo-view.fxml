@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.promocionesController">
+    <top>
+        <HBox alignment="CENTER" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Gestión de Promociones" />
+        </HBox>
+    </top>
+
+    <center>
+        <TabPane>
+            <Tab text="Crear Promoción">
+                <VBox spacing="10" style="-fx-padding: 20;">
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="ID de la Promoción:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="nombrePromocionField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <Label text="Fecha de Inicio:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <DatePicker fx:id="fechaInicioDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <Label text="Fecha de Fin:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <DatePicker fx:id="fechaFinDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <Label text="Descuento GOLD (%):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <TextField fx:id="descuentoGoldField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <Label text="Descuento PLATE (%):" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <TextField fx:id="descuentoPlateField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                        <Label text="Descuento BRONZE (%):" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                        <TextField fx:id="descuentoBronzeField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                        <Label text="Descuento PLATINO (%):" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                        <TextField fx:id="descuentoPlatinoField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+                    </GridPane>
+                    <Button fx:id="btnCrearPromocion" onAction="#crearPromo" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Crear Promoción" />
+                </VBox>
+            </Tab>
+
+            <Tab text="Promociones Activas y Próximas">
+                <VBox spacing="10" style="-fx-padding: 20;">
+                    <TableView fx:id="promocionesActivasTable">
+                        <columns>
+                            <TableColumn fx:id="nombreColumna" text="ID" />
+                            <TableColumn fx:id="inicioColumna" text="Inicio" />
+                            <TableColumn fx:id="finColumna" text="Fin" />
+                            <TableColumn fx:id="goldColumna" text="GOLD %" />
+                            <TableColumn fx:id="plateColumna" text="PLATE %" />
+                            <TableColumn fx:id="bronzeColumna" text="BRONZE %" />
+                            <TableColumn fx:id="platinoColumna" text="PLATINO %" />
+                        </columns>
+                    </TableView>
+                    <Button fx:id="btnEditarPromo" onAction="#editarPromocion" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Editar Seleccionada" />
+               <Button fx:id="btnEliminar" onAction="#eliminar" prefHeight="26.0" prefWidth="69.0" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Eliminar" />
+                </VBox>
+            </Tab>
+
+            <Tab text="Historial de Promociones">
+                <VBox spacing="10" style="-fx-padding: 20;">
+                    <TableView fx:id="historialPromocionesTable">
+                        <columns>
+                            <TableColumn fx:id="nombreHistorialColumna" text="ID" />
+                            <TableColumn fx:id="inicioHistorialColumna" text="Inicio" />
+                            <TableColumn fx:id="finHistorialColumna" text="Fin" />
+                            <TableColumn fx:id="goldHistorialColumna" text="GOLD %" />
+                            <TableColumn fx:id="plateHistorialColumna" text="PLATE %" />
+                            <TableColumn fx:id="bronzeHistorialColumna" text="BRONZE %" />
+                            <TableColumn fx:id="platinoHistorialColumna" text="PLATINO %" />
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Button fx:id="btnCerrar" onAction="#cerrarVentana" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Cerrar" />
+        </HBox>
+    </bottom>
+</BorderPane>
