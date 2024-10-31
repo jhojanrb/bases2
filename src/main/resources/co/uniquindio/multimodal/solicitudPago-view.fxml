@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="co.uniquindio.multimodal.solicitudPagoController">
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Gestión de Solicitudes de Pago" />
+            <HBox spacing="10">
+                <TextField fx:id="busquedaField" promptText="Buscar por nombre de vendedor" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="estadoFiltroComboBox" onAction="#filtrar" promptText="Filtrar por estado" />
+                <DatePicker fx:id="fechaInicioPicker" promptText="Fecha inicio" />
+                <DatePicker fx:id="fechaFinPicker" promptText="Fecha fin" />
+                <Button fx:id="btnBuscar" onAction="#buscarSolicitudes" text="Buscar" />
+                <Button fx:id="btnLimpiar" onAction="#limpiarFiltros" text="Limpiar Filtros" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS">
+            <VBox>
+                <TableView fx:id="solicitudesTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" />
+                        <TableColumn fx:id="vendedorColumn" text="Vendedor" />
+                        <TableColumn fx:id="fechaColumn" text="Fecha" />
+                        <TableColumn fx:id="montoColumn" text="Monto" />
+                        <TableColumn fx:id="estadoColumn" text="Estado" />
+                    </columns>
+                </TableView>
+                <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10;">
+                    <Button fx:id="btnAprobar" onAction="#aprobarSolicitud" style="-fx-background-color: #2ecc71;" text="Aprobar Seleccionada" />
+                    <Button fx:id="btnRechazar" onAction="#rechazarSolicitud" style="-fx-background-color: #e74c3c;" text="Rechazar Seleccionada" />
+                    <Button fx:id="btnGenerarInforme" onAction="#generarInforme" style="-fx-background-color: #f39c12;" text="Generar Informe" />
+                </HBox>
+            </VBox>
+            <VBox>
+                <TitledPane collapsible="false" text="Detalles de la Solicitud" VBox.vgrow="ALWAYS">
+                    <VBox spacing="10">
+                        <Label fx:id="detalleVendedorLabel" text="Vendedor: " />
+                        <Label fx:id="detalleNivelLabel" text="Nivel: " />
+                        <Label fx:id="detalleVentasLabel" text="Ventas Recientes: " />
+                        <Label fx:id="detalleComisionesLabel" text="Comisiones Generadas: " />
+                        <Label fx:id="detalleCumplimientoMetasLabel" text="Cumplimiento de Metas: " />
+                        <TextArea fx:id="comentarioRechazoArea" promptText="Razón del rechazo" wrapText="true" />
+                    </VBox>
+                </TitledPane>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Button fx:id="btnHistorial" onAction="#verHistorialSolicitudes" text="Ver Historial de Solicitudes" />
+            <Button fx:id="btnCerrar" onAction="#cerrarVentana" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Cerrar" />
+        </HBox>
+    </bottom>
+</BorderPane>

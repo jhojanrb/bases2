@@ -5,14 +5,16 @@ public class Vendedor {
     private String nombre;
     private String apellido;
     private String email;
+    private String nivel;
     private String estadoVendedor; // Ahora es un String que almacena el nombre del estado
 
     // Constructor principal con el nombre del estado en lugar del ID
-    public Vendedor(int idVendedor, String nombre, String apellido, String email, String estadoVendedor) {
+    public Vendedor(int idVendedor, String nombre, String apellido, String email, String nivel, String estadoVendedor) {
         this.idVendedor = idVendedor;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
+        this.nivel = nivel;
         this.estadoVendedor = estadoVendedor;
     }
 
@@ -31,6 +33,14 @@ public class Vendedor {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(String nivel){
+        this.nivel = nivel;
     }
 
     public String getApellido() {
@@ -58,6 +68,7 @@ public class Vendedor {
     }
 
     // Método toString para facilitar la depuración
+
     @Override
     public String toString() {
         return "Vendedor{" +
@@ -65,6 +76,7 @@ public class Vendedor {
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
                 ", email='" + email + '\'' +
+                ", nivel='" + nivel + '\'' +
                 ", estadoVendedor='" + estadoVendedor + '\'' +
                 '}';
     }

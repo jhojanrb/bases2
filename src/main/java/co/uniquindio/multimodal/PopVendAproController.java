@@ -60,9 +60,15 @@ public class PopVendAproController {
     public void initialize() {
         // Configurar columnas de la tabla
         idColumn.setCellValueFactory(new PropertyValueFactory<>("idVendedor"));
-        nombreColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+
+        // Concatenar nombre y apellido para mostrar en la columna de Nombre
+        nombreColumn.setCellValueFactory(cellData -> {
+            Vendedor vendedor = cellData.getValue();
+            return new javafx.beans.property.SimpleStringProperty(vendedor.getNombre() + " " + vendedor.getApellido());
+        });
+
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        estadoColumn.setCellValueFactory(new PropertyValueFactory<>("estadoVendedor")); // Muestra el nombre del estado
+        estadoColumn.setCellValueFactory(new PropertyValueFactory<>("estadoVendedor"));
 
         // Cargar las solicitudes pendientes en la tabla
         cargarSolicitudesPen();
@@ -74,6 +80,7 @@ public class PopVendAproController {
         ObservableList<Vendedor> data = FXCollections.observableArrayList(solicitudesPendientes);
         vendedoresTable.setItems(data);
     }
+
 
     @FXML
     void aprobarSeleccionados(ActionEvent event) {

@@ -292,11 +292,12 @@ public class VerificarLogin {
             ResultSet rs = (ResultSet) stmt.getObject(1);
             while (rs.next()) {
                 Vendedor vendedor = new Vendedor(
-                        rs.getInt("id_vendedor"),
-                        rs.getString("nombre"),
-                        rs.getString("apellido"),
-                        rs.getString("email"),
-                        rs.getString("estado_vendedor") // Añade el nombre del estado como String
+                        rs.getInt("id_vendedor"),               // ID del vendedor
+                        rs.getString("nombre"),                 // Nombre del vendedor
+                        rs.getString("apellido"),               // Apellido del vendedor
+                        rs.getString("email"),                  // Email del vendedor
+                        null,                                   // Nivel (opcional si no se devuelve)
+                        rs.getString("estado_vendedor")         // Estado del vendedor
                 );
                 solicitudes.add(vendedor);
             }
@@ -306,6 +307,7 @@ public class VerificarLogin {
         }
         return solicitudes;
     }
+
 
 
     /**
@@ -561,6 +563,93 @@ public class VerificarLogin {
         }
 
         return success;
+    }
+
+    /**
+     * CARGAR SOLICITUDES A LA TABLA
+     * @return
+     */
+
+    public List<SolicitudPago> obtenerSolicitudesPago() {
+        List<SolicitudPago> solicitudes = new ArrayList<>();
+        Connection connection = null;
+        CallableStatement stmt = null;
+
+        try {
+            connection = getConnection();
+            stmt = connection.prepareCall("{call cargar_solicitudes_pago(?)}");
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+
+            while (rs.next()) {
+                SolicitudPago solicitud = new SolicitudPago(
+                        rs.getInt("id"),
+                        rs.getString("vendedor"),
+                        rs.getDate("fecha"),
+                        rs.getDouble("monto"),
+                        rs.getString("estado")
+                );
+                solicitudes.add(solicitud);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return solicitudes;
+    }
+
+    /**
+     * CARGAR TODOS LOS VENDEDORES
+     * @return
+     */
+
+    public List<Vendedor> obtenerVendedores() {
+        List<Vendedor> vendedores = new ArrayList<>();
+        Connection connection = null;
+        CallableStatement stmt = null;
+
+        try {
+            connection = getConnection();
+            stmt = connection.prepareCall("{call cargar_vendedores(?)}");
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+
+            while (rs.next()) {
+                Vendedor vendedor = new Vendedor(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("email"),
+                        rs.getString("nivel"),
+                        rs.getString("estado")
+                );
+                vendedores.add(vendedor);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return vendedores;
     }
 
 

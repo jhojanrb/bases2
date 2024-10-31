@@ -23,12 +23,12 @@
 
    <left>
       <VBox spacing="10" style="-fx-background-color: #2c3e50; -fx-padding: 10;" BorderPane.alignment="CENTER">
-         <Button fx:id="btnDashboard" maxWidth="Infinity" onAction="#dashboard" style="-fx-background-color: #5e84aa;" text="Dashboard" />
-         <Button fx:id="btnGestionVendedores" maxWidth="Infinity" onAction="#gestionVendedores" style="-fx-background-color: #34495e;" text="Gestión de Vendedores" />
-         <Button fx:id="btnCatalogoProductos" maxWidth="Infinity" onAction="#catalogoProductos" style="-fx-background-color: #34495e;" text="Catálogo de Productos" />
-         <Button fx:id="btnInventario" maxWidth="Infinity" onAction="#inventario" style="-fx-background-color: #34495e;" text="Inventario" />
-         <Button fx:id="btnComisiones" maxWidth="Infinity" onAction="#comisiones" style="-fx-background-color: #34495e;" text="Comisiones" />
-         <Button fx:id="btnReportes" maxWidth="Infinity" onAction="#reportes" style="-fx-background-color: #34495e;" text="Reportes" />
+         <Button fx:id="btnDashboard" maxWidth="Infinity" onAction="#dashboard" style="-fx-background-color: #88bff6; -fx-cursor: hand" text="Dashboard" />
+         <Button fx:id="btnGestionVendedores" maxWidth="Infinity" onAction="#gestionVendedores" style="-fx-background-color: #415c76; -fx-cursor: hand" text="Gestión de Vendedores" />
+         <Button fx:id="btnCatalogoProductos" maxWidth="Infinity" onAction="#catalogoProductos" style="-fx-background-color: #415c76; -fx-cursor: hand" text="Catálogo de Productos" />
+         <Button fx:id="btnInventario" maxWidth="Infinity" onAction="#inventario" style="-fx-background-color: #415c76; -fx-cursor: hand" text="Inventario" />
+         <Button fx:id="btnComisiones" maxWidth="Infinity" onAction="#comisiones" style="-fx-background-color: #415c76; -fx-cursor: hand" text="Comisiones" />
+         <Button fx:id="btnReportes" maxWidth="Infinity" onAction="#reportes" style="-fx-background-color: #415c76; -fx-cursor: hand" text="Reportes" />
       </VBox>
    </left>
 
@@ -54,7 +54,7 @@
                <VBox spacing="10">
                   <Button fx:id="btnAprobarVendedores" maxWidth="Infinity" onAction="#aprobarVendedor" style=" -fx-cursor: hand;" text="Aprobar Nuevos Vendedores" />
                   <Button fx:id="btnGestionarPromocion" maxWidth="Infinity" onAction="#gestionarPromocion" style=" -fx-cursor: hand;" text="Gestionar Promociones" />
-                  <Button maxWidth="Infinity" text="Revisar Solicitudes de Pago" />
+                  <Button fx:id="btnRevisarSolicitudesPago" maxWidth="Infinity" onAction="#gestionarSolicitudes" style=" -fx-cursor: hand;" text="Revisar Solicitudes de Pago" />
                </VBox>
             </TitledPane>
 

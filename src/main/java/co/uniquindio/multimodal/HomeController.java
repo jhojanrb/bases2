@@ -51,6 +51,9 @@ public class HomeController {
     private Button btnInventario;
 
     @FXML
+    private Button btnRevisarSolicitudesPago;
+
+    @FXML
     private Button btnReportes;
 
     @FXML
@@ -178,10 +181,66 @@ public class HomeController {
     @FXML
     void dashboard(ActionEvent event) {
 
+        try {
+            // Cargar la interfaz de inicio de sesión
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            // Obtener el tamaño de la pantalla completa
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Crear un nuevo Stage y establecer la nueva escena con las dimensiones de la pantalla
+            Stage newStage = new Stage();
+            newStage.setTitle("Home Admin");
+            newStage.setScene(scene);
+            newStage.setX(screenBounds.getMinX());
+            newStage.setY(screenBounds.getMinY());
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+            // Mostrar el nuevo Stage en pantalla completa
+            newStage.show();
+
+            // Cerrar el Stage actual si es necesario
+            Stage currentStage = (Stage) btnCerrarSesion.getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar la interfaz Home Admin.");
+        }
+
     }
 
     @FXML
     void gestionVendedores(ActionEvent event) {
+
+        try {
+            // Cargar la interfaz de inicio de sesión
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("gestionVendedores-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            // Obtener el tamaño de la pantalla completa
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Crear un nuevo Stage y establecer la nueva escena con las dimensiones de la pantalla
+            Stage newStage = new Stage();
+            newStage.setTitle("Gestionar Vendedores");
+            newStage.setScene(scene);
+            newStage.setX(screenBounds.getMinX());
+            newStage.setY(screenBounds.getMinY());
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+            // Mostrar el nuevo Stage en pantalla completa
+            newStage.show();
+
+            // Cerrar el Stage actual si es necesario
+            Stage currentStage = (Stage) btnCerrarSesion.getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar la interfaz Gestion de Vendedores.");
+        }
 
     }
 
@@ -228,6 +287,36 @@ public class HomeController {
 
     }
 
+    public void gestionarSolicitudes(ActionEvent actionEvent) {
+
+        try {
+            // Cargar la interfaz de inicio de sesión
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("solicitudPago-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            // Obtener el tamaño de la pantalla completa
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Crear un nuevo Stage y establecer la nueva escena con las dimensiones de la pantalla
+            Stage newStage = new Stage();
+            newStage.setTitle("Gestionar Solicitudes");
+            newStage.setScene(scene);
+            newStage.setX(screenBounds.getMinX());
+            newStage.setY(screenBounds.getMinY());
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+            // Mostrar el nuevo Stage en pantalla completa
+            newStage.show();
+
+            // Cerrar el Stage actual si es necesario
+            Stage currentStage = (Stage) btnCerrarSesion.getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar la interfaz de solicitud pagos.");
+        }
+    }
 }
 
 
