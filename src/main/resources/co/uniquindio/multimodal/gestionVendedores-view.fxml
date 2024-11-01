@@ -3,76 +3,145 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.gestionVendedoresController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="co.uniquindio.multimodal.gestionVendedoresController">
     <top>
         <VBox spacing="10" style="-fx-background-color: #3498db; -fx-padding: 10;">
-            <Label text="Gestión de Vendedores" style="-fx-text-fill: white; -fx-font-size: 20;"/>
+            <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Gestión de Vendedores" />
             <HBox spacing="10">
-                <TextField fx:id="busquedaField" promptText="Buscar vendedor" HBox.hgrow="ALWAYS"/>
-                <ComboBox fx:id="nivelFiltroComboBox" promptText="Filtrar por nivel"/>
-                <ComboBox fx:id="estadoFiltroComboBox" promptText="Filtrar por estado"/>
-                <Button text="Buscar" onAction="#buscarVendedores"/>
-                <Button text="Limpiar Filtros" onAction="#limpiarFiltros"/>
+                <TextField fx:id="busquedaField" promptText="Buscar vendedor" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="nivelFiltroComboBox" promptText="Filtrar por nivel">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Todos" />
+                            <String fx:value="Bronze" />
+                            <String fx:value="Plate" />
+                            <String fx:value="Platino" />
+                            <String fx:value="Gold" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <ComboBox fx:id="estadoFiltroComboBox" promptText="Filtrar por estado" >
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Todos" />
+                            <String fx:value="Activo" />
+                            <String fx:value="Inactivo" />
+                            <String fx:value="Suspendido" />
+                            <String fx:value="Pendiente" />
+                            <String fx:value="Rechazado" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button onAction="#buscarVendedores" text="Buscar" />
+                <Button onAction="#limpiarFiltros" text="Limpiar Filtros" />
             </HBox>
         </VBox>
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.7" VBox.vgrow="ALWAYS">
+        <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS">
             <VBox>
                 <TableView fx:id="vendedoresTable" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="idColumn" text="ID"/>
-                        <TableColumn fx:id="nombreColumn" text="Nombre"/>
-                        <TableColumn fx:id="emailColumn" text="Email"/>
-                        <TableColumn fx:id="nivelColumn" text="Nivel"/>
-                        <TableColumn fx:id="estadoColumn" text="Estado"/>
+                        <TableColumn fx:id="idColumn" text="ID" />
+                        <TableColumn fx:id="nombreColumn" text="Nombre" />
+                        <TableColumn fx:id="emailColumn" text="Email" />
+                        <TableColumn fx:id="nivelColumn" text="Nivel" />
+                        <TableColumn fx:id="estadoColumn" text="Estado" />
                     </columns>
                 </TableView>
-                <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10;">
-                    <Button text="Aprobar" onAction="#aprobarVendedor" style="-fx-background-color: #2ecc71;"/>
-                    <Button text="Rechazar" onAction="#rechazarVendedor" style="-fx-background-color: #e74c3c;"/>
-                    <Button text="Editar" onAction="#editarVendedor" style="-fx-background-color: #f39c12;"/>
-                    <Button text="Cambiar Nivel" onAction="#cambiarNivel" style="-fx-background-color: #3498db;"/>
+                <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10;">
+                    <Button onAction="#eliminarVendedor" style="-fx-background-color: #e74c3c;" text="Eliminar" />
+                    <Button onAction="#editarVendedor" style="-fx-background-color: #f39c12;" text="Editar" />
+                    <Button onAction="#cambiarNivel" style="-fx-background-color: #3498db;" text="Cambiar Nivel" />
                 </HBox>
             </VBox>
             <VBox>
-                <TitledPane text="Detalles del Vendedor" collapsible="false" VBox.vgrow="ALWAYS">
-                    <GridPane vgap="10" hgap="10">
-                        <Label text="ID:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <Label fx:id="detalleIdLabel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <TabPane VBox.vgrow="ALWAYS">
+                    <Tab text="Detalles del Vendedor" closable="false">
+                        <VBox spacing="10" style="-fx-padding: 10;">
+                            <GridPane hgap="10" vgap="10">
+                                <Label text="ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <Label fx:id="detalleIdLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                        <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                        <Label fx:id="detalleNombreLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <Label fx:id="detalleNombreLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                        <Label fx:id="detalleEmailLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <Label fx:id="detalleEmailLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                        <Label text="Nivel:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                        <Label fx:id="detalleNivelLabel" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                                <Label text="Nivel:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <Label fx:id="detalleNivelLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                        <Label text="Estado:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-                        <Label fx:id="detalleEstadoLabel" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                <Label text="Estado:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <Label fx:id="detalleEstadoLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                        <Label text="Fecha de Registro:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-                        <Label fx:id="detalleFechaRegistroLabel" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                                <Label text="Fecha de Registro:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                <Label fx:id="detalleFechaRegistroLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-                        <Label text="Ventas Totales:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-                        <Label fx:id="detalleVentasTotalesLabel" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                                <Label text="Ventas Totales:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                <Label fx:id="detalleVentasTotalesLabel" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-                        <Label text="Comisiones Ganadas:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-                        <Label fx:id="detalleComisionesLabel" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-                    </GridPane>
-                </TitledPane>
+                                <Label text="Comisiones Ganadas:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                <Label fx:id="detalleComisionesLabel" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                            </GridPane>
+                        </VBox>
+                    </Tab>
+                    <Tab text="Registrar Nuevo Vendedor" closable="false">
+                        <VBox spacing="10" style="-fx-padding: 10;">
+                            <GridPane hgap="10" vgap="10">
+                                <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="nombreField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                <Label text="Apellido:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="apellidoField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                <Label text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                                <Label text="Confirmar Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                                <Label text="Nivel:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                <ComboBox fx:id="nivelRegistroComboBox" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="Bronze" />
+                                            <String fx:value="Plate" />
+                                            <String fx:value="Platino" />
+                                            <String fx:value="Gold" />
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+
+                                <Label text="Estado:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                <ComboBox fx:id="estadoRegistroComboBox" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="Activo" />
+                                            <String fx:value="Pendiente" />
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                            </GridPane>
+                            <Button onAction="#registrarVendedor" style="-fx-background-color: #2ecc71;" text="Registrar Vendedor" maxWidth="Infinity" />
+                        </VBox>
+                    </Tab>
+                </TabPane>
             </VBox>
         </SplitPane>
     </center>
 
     <bottom>
         <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #3498db; -fx-padding: 10;">
-            <Button text="Exportar Lista" onAction="#exportarListaVendedores" style="-fx-background-color: #27ae60; -fx-cursor: hand"/>
-            <Button fx:id="btnVolver" text="Volver al Dashboard" onAction="#volverAlDashboard" style="-fx-background-color: #e74c3c; -fx-cursor: hand"/>
+            <Button onAction="#exportarListaVendedores" style="-fx-background-color: #27ae60; -fx-cursor: hand" text="Exportar Lista" />
+            <Button fx:id="btnVolver" onAction="#volverAlDashboard" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Volver al Dashboard" />
         </HBox>
     </bottom>
 </BorderPane>

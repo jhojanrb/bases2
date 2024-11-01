@@ -652,6 +652,168 @@ public class VerificarLogin {
         return vendedores;
     }
 
+    /**
+     * BSUCAR VENDEDORES
+     * @param nombre
+     * @param nivel
+     * @param estado
+     * @return
+     */
+    // Método para buscar vendedores
+    public List<Vendedor> buscarVendedores(String nombre, String nivel, String estado) {
+        List<Vendedor> vendedores = new ArrayList<>();
+        Connection connection = null;
+        CallableStatement stmt = null;
+
+        try {
+            connection = getConnection();
+            stmt = connection.prepareCall("{call buscar_vendedores(?, ?, ?, ?)}");
+
+            // Configura los parámetros de entrada
+            stmt.setString(1, nombre);
+            stmt.setString(2, nivel);
+            stmt.setString(3, estado);
+
+            // Configura el parámetro de salida (cursor)
+            stmt.registerOutParameter(4, OracleTypes.CURSOR);
+
+            // Ejecuta el procedimiento
+            stmt.execute();
+
+            // Procesa el cursor de resultados
+            ResultSet rs = (ResultSet) stmt.getObject(4);
+            while (rs.next()) {
+                Vendedor vendedor = new Vendedor(
+                        rs.getInt("id_vendedor"),
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("email"),
+                        rs.getString("nivel"),
+                        rs.getString("estado")
+                );
+                vendedores.add(vendedor);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return vendedores;
+    }
+
+    /**
+     * REGISTRAR VENDEDOR
+     * @param nombre
+     * @param apellido
+     * @param email
+     * @param contrasena
+     * @param nivel
+     * @param estado
+     * @return
+     */
+
+    public boolean registrarVendedor(String nombre, String apellido, String email, String contrasena, String nivel, String estado) {
+        Connection connection = null;
+        CallableStatement stmt = null;
+        boolean success = false;
+
+        try {
+            connection = getConnection();
+            stmt = connection.prepareCall("{call registrar_vendedor(?, ?, ?, ?, ?, ?)}");
+
+            // Configura los parámetros de entrada
+            stmt.setString(1, nombre);
+            stmt.setString(2, apellido);
+            stmt.setString(3, email);
+            stmt.setString(4, contrasena);
+            stmt.setString(5, nivel);
+            stmt.setString(6, estado);
+
+            // Ejecuta el procedimiento
+            stmt.execute();
+            success = true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return success;
+    }
+
+    /**
+     * Actualizar el nivel de un vendedor
+     * @param idVendedor ID del vendedor
+     * @param nivel Nuevo nivel del vendedor
+     * @return true si la operación fue exitosa
+     */
+    public boolean actualizarNivelVendedor(int idVendedor, String nivel) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call actualizar_nivel_vendedor(?, ?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.setString(2, nivel);
+            stmt.execute();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Actualizar el estado de un vendedor
+     * @param idVendedor ID del vendedor
+     * @param estado Nuevo estado del vendedor
+     * @return true si la operación fue exitosa
+     */
+    public boolean actualizarEstadoVendedor(int idVendedor, String estado) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call actualizar_estado_vendedor(?, ?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.setString(2, estado);
+            stmt.execute();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Eliminar un vendedor por su ID
+     * @param idVendedor ID del vendedor a eliminar
+     * @return true si la operación fue exitosa
+     */
+    public boolean eliminarVendedor(int idVendedor) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call eliminar_vendedor(?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.execute();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
     /**
