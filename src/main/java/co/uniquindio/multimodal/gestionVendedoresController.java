@@ -11,11 +11,14 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.util.Map;
 
 public class gestionVendedoresController {
 
@@ -62,6 +65,9 @@ public class gestionVendedoresController {
     private Button btnVolver;
 
     @FXML
+    private Button btnRegistrar;
+
+    @FXML
     private Label detalleVentasTotalesLabel;
 
     @FXML
@@ -94,6 +100,10 @@ public class gestionVendedoresController {
     @FXML
     private TableView<Vendedor> vendedoresTable;
 
+    /**
+     * REGISTRA O ACTUALIZA EL VENDEDOR
+     * @param event
+     */
     @FXML
     void registrarVendedor(ActionEvent event) {
 
@@ -115,15 +125,31 @@ public class gestionVendedoresController {
             return;
         }
 
-        boolean success = verificarLogin.registrarVendedor(nombre, apellido, email, contrasena, nivel, estado);
-
-        if (success) {
-            mostrarAlerta("Éxito", "Vendedor registrado exitosamente.");
-            limpiarFormularioRegistro();
-            cargarVendedores();
+        // Si estamos en modo edición, actualizar el vendedor existente
+        if (vendedorEditando != null) {
+            boolean exito = verificarLogin.actualizarVendedor(vendedorEditando.getIdVendedor(), nombre, apellido, email, nivel, estado);
+            if (exito) {
+                mostrarAlerta("Éxito", "Vendedor actualizado exitosamente.");
+                limpiarFormularioRegistro();
+                cargarVendedores();
+            } else {
+                mostrarAlerta("Error", "Error al actualizar el vendedor.");
+            }
         } else {
-            mostrarAlerta("Error", "Error al registrar el vendedor.");
+            // Modo de registro de nuevo vendedor
+            boolean exito = verificarLogin.registrarVendedor(nombre, apellido, email, contrasena, nivel, estado);
+            if (exito) {
+                mostrarAlerta("Éxito", "Vendedor registrado exitosamente.");
+                limpiarFormularioRegistro();
+                cargarVendedores();
+            } else {
+                mostrarAlerta("Error", "Error al registrar el vendedor.");
+            }
         }
+
+        // Restablecer modo de formulario
+        vendedorEditando = null;
+        btnRegistrar.setText("Registrar Vendedor");
 
     }
 
@@ -202,8 +228,49 @@ public class gestionVendedoresController {
 
     }
 
+    /**
+     * Método para cambiar el estado de un vendedor seleccionado
+     */
+    @FXML
+    void cambiarEstado(ActionEvent event) {
+        Vendedor vendedorSeleccionado = vendedoresTable.getSelectionModel().getSelectedItem();
+        if (vendedorSeleccionado != null) {
+            String nuevoEstado = mostrarDialogoSeleccionEstado();
+            if (nuevoEstado != null) {
+                boolean exito = verificarLogin.actualizarEstadoVendedor(vendedorSeleccionado.getIdVendedor(), nuevoEstado);
+                if (exito) {
+                    mostrarAlerta("Éxito", "Estado actualizado correctamente.");
+                    cargarVendedores();
+                } else {
+                    mostrarAlerta("Error", "No se pudo actualizar el estado del vendedor.");
+                }
+            }
+        } else {
+            mostrarAlerta("Advertencia", "Seleccione un vendedor para cambiar el estado.");
+        }
+    }
+
+    private Vendedor vendedorEditando = null; // Para saber si estamos en modo de edición
+
     @FXML
     void editarVendedor(ActionEvent event) {
+
+        Vendedor vendedorSeleccionado = vendedoresTable.getSelectionModel().getSelectedItem();
+        if (vendedorSeleccionado == null) {
+            mostrarAlerta("Advertencia", "Seleccione un vendedor para editar.");
+            return;
+        }
+
+        // Cargar datos del vendedor seleccionado en los campos de edición
+        nombreField.setText(vendedorSeleccionado.getNombre());
+        apellidoField.setText(vendedorSeleccionado.getApellido());
+        emailField.setText(vendedorSeleccionado.getEmail());
+        nivelRegistroComboBox.setValue(vendedorSeleccionado.getNivel());
+        estadoRegistroComboBox.setValue(vendedorSeleccionado.getEstadoVendedor());
+
+        // Cambiar el botón para indicar modo edición
+        btnRegistrar.setText("Guardar Cambios");
+        vendedorEditando = vendedorSeleccionado;
 
     }
 
@@ -227,20 +294,31 @@ public class gestionVendedoresController {
     @FXML
     void eliminarVendedor(ActionEvent event) {
 
-
-
         Vendedor vendedorSeleccionado = vendedoresTable.getSelectionModel().getSelectedItem();
+
         if (vendedorSeleccionado != null) {
-            boolean exito = verificarLogin.eliminarVendedor(vendedorSeleccionado.getIdVendedor());
-            if (exito) {
-                mostrarAlerta("Éxito", "Vendedor eliminado correctamente.");
-                cargarVendedores();
-            } else {
-                mostrarAlerta("Error", "No se pudo eliminar el vendedor.");
+            // Crear la alerta de confirmación
+            Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmacion.setTitle("Confirmación de eliminación");
+            confirmacion.setHeaderText("¿Está seguro que desea eliminar este vendedor?");
+            confirmacion.setContentText("Esta acción no se puede deshacer.");
+
+            // Mostrar la alerta y esperar respuesta del usuario
+            Optional<ButtonType> resultado = confirmacion.showAndWait();
+            if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+                // Si el usuario confirma, proceder a eliminar
+                boolean exito = verificarLogin.eliminarVendedor(vendedorSeleccionado.getIdVendedor());
+                if (exito) {
+                    mostrarAlerta("Éxito", "Vendedor eliminado correctamente.");
+                    cargarVendedores();
+                } else {
+                    mostrarAlerta("Error", "No se pudo eliminar el vendedor.");
+                }
             }
         } else {
             mostrarAlerta("Advertencia", "Seleccione un vendedor para eliminar.");
         }
+
 
     }
 
@@ -292,6 +370,40 @@ public class gestionVendedoresController {
         nivelColumn.setCellValueFactory(new PropertyValueFactory<>("nivel"));
         estadoColumn.setCellValueFactory(new PropertyValueFactory<>("estadoVendedor"));
         cargarVendedores();
+
+        // Configurar el evento de doble clic en la fila de la tabla
+        vendedoresTable.setRowFactory(tv -> {
+            TableRow<Vendedor> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Vendedor vendedorSeleccionado = row.getItem();
+                    cargarDetallesVendedor(vendedorSeleccionado.getIdVendedor());
+                }
+            });
+            return row;
+        });
+    }
+
+    /**
+     * Cargar la información detallada del vendedor seleccionado en los labels de detalles
+     */
+    private void cargarDetallesVendedor(int idVendedor) {
+        Map<String, Object> detalles = verificarLogin.obtenerDetallesVendedor(idVendedor);
+        if (detalles.isEmpty()) {
+            mostrarAlerta("Error", "No se pudo cargar los detalles del vendedor.");
+            return;
+        }
+
+        detalleIdLabel.setText(String.valueOf(detalles.get("idVendedor")));
+        detalleNombreLabel.setText((String) detalles.get("nombre"));
+        detalleEmailLabel.setText((String) detalles.get("email"));
+        detalleNivelLabel.setText((String) detalles.get("nivel"));
+        detalleEstadoLabel.setText((String) detalles.get("estado"));
+
+        // Corrige el uso de fecha_ingreso en lugar de fechaRegistro
+        detalleFechaRegistroLabel.setText(detalles.get("fecha_ingreso").toString());
+        detalleVentasTotalesLabel.setText(String.valueOf(detalles.get("ventasTotales")));
+        detalleComisionesLabel.setText(String.valueOf(detalles.get("comisionesGanadas")));
     }
 
     private void cargarVendedores() {

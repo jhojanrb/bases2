@@ -2,7 +2,10 @@ package co.uniquindio.multimodal.conexionBD;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import oracle.jdbc.OracleTypes;
 
 
@@ -39,6 +42,7 @@ public class VerificarLogin {
 
     /**
      * LOGIN ADMINISTRADOR
+     *
      * @param email
      * @param contrasena
      * @return
@@ -86,6 +90,7 @@ public class VerificarLogin {
 
     /**
      * LOGIN VENDEDOR
+     *
      * @param email
      * @param idVendedor
      * @return
@@ -124,6 +129,7 @@ public class VerificarLogin {
 
     /**
      * LOGIN CLIENTE
+     *
      * @param email
      * @param idCliente
      * @return
@@ -162,6 +168,7 @@ public class VerificarLogin {
 
     /**
      * RESUMEN VENTAS EN EL TABLEVIEW ADMIN
+     *
      * @return
      */
 
@@ -277,6 +284,7 @@ public class VerificarLogin {
 
     /**
      * OBTENER SOLICITUDES PENDIENTES DE LOS VENDEDORES
+     *
      * @return
      */
 
@@ -309,9 +317,9 @@ public class VerificarLogin {
     }
 
 
-
     /**
      * APROBAR VENDEDOR
+     *
      * @param idVendedor
      */
 
@@ -328,6 +336,7 @@ public class VerificarLogin {
 
     /**
      * RECHAZAR VENDEDOR
+     *
      * @param idVendedor
      */
     public void rechazarVendedor(int idVendedor) {
@@ -343,6 +352,7 @@ public class VerificarLogin {
 
     /**
      * cargarPromociones
+     *
      * @return
      */
 
@@ -394,6 +404,7 @@ public class VerificarLogin {
 
     /**
      * historialPromociones
+     *
      * @return
      */
     public List<Promocion> obtenerHistorialPromociones() {
@@ -438,6 +449,7 @@ public class VerificarLogin {
 
     /**
      * CREAR PROMOCION
+     *
      * @param idPromocion
      * @param fechaInicio
      * @param fechaFin
@@ -485,6 +497,7 @@ public class VerificarLogin {
 
     /**
      * EDITAR PROMOCION DE LA TABLA
+     *
      * @param idPromocion
      * @param fechaInicio
      * @param fechaFin
@@ -532,6 +545,7 @@ public class VerificarLogin {
 
     /**
      * ELIMINAR UNA PROMOCION DE LA TABLA
+     *
      * @param idPromocion
      * @return
      */
@@ -567,6 +581,7 @@ public class VerificarLogin {
 
     /**
      * CARGAR SOLICITUDES A LA TABLA
+     *
      * @return
      */
 
@@ -610,6 +625,7 @@ public class VerificarLogin {
 
     /**
      * CARGAR TODOS LOS VENDEDORES
+     *
      * @return
      */
 
@@ -654,6 +670,7 @@ public class VerificarLogin {
 
     /**
      * BSUCAR VENDEDORES
+     *
      * @param nombre
      * @param nivel
      * @param estado
@@ -710,6 +727,7 @@ public class VerificarLogin {
 
     /**
      * REGISTRAR VENDEDOR
+     *
      * @param nombre
      * @param apellido
      * @param email
@@ -756,8 +774,9 @@ public class VerificarLogin {
 
     /**
      * Actualizar el nivel de un vendedor
+     *
      * @param idVendedor ID del vendedor
-     * @param nivel Nuevo nivel del vendedor
+     * @param nivel      Nuevo nivel del vendedor
      * @return true si la operación fue exitosa
      */
     public boolean actualizarNivelVendedor(int idVendedor, String nivel) {
@@ -777,8 +796,9 @@ public class VerificarLogin {
 
     /**
      * Actualizar el estado de un vendedor
+     *
      * @param idVendedor ID del vendedor
-     * @param estado Nuevo estado del vendedor
+     * @param estado     Nuevo estado del vendedor
      * @return true si la operación fue exitosa
      */
     public boolean actualizarEstadoVendedor(int idVendedor, String estado) {
@@ -798,6 +818,7 @@ public class VerificarLogin {
 
     /**
      * Eliminar un vendedor por su ID
+     *
      * @param idVendedor ID del vendedor a eliminar
      * @return true si la operación fue exitosa
      */
@@ -814,6 +835,72 @@ public class VerificarLogin {
             return false;
         }
     }
+
+
+    /**
+     * OBTIENE LOS DETALLES TOTALES DEL VENDEDOR
+     * @param idVendedor
+     * @return
+     */
+
+    public Map<String, Object> obtenerDetallesVendedor(int idVendedor) {
+        Map<String, Object> detalles = new HashMap<>();
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_detalles_vendedor(?, ?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+
+            try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
+                if (rs.next()) {
+                    detalles.put("idVendedor", rs.getInt("id_vendedor"));
+                    detalles.put("nombre", rs.getString("nombre"));
+                    detalles.put("email", rs.getString("email"));
+                    detalles.put("nivel", rs.getString("nivel"));
+                    detalles.put("estado", rs.getString("estado"));
+                    detalles.put("fecha_ingreso", rs.getDate("fecha_ingreso")); // Nombre de columna corregido
+                    detalles.put("ventasTotales", rs.getDouble("ventas_totales"));
+                    detalles.put("comisionesGanadas", rs.getDouble("comisiones_ganadas"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return detalles;
+    }
+
+    /**
+     * ACTUALIZAR DATOS DEL VENDEDOR
+     * @param idVendedor
+     * @param nombre
+     * @param apellido
+     * @param email
+     * @param nivel
+     * @param estado
+     * @return
+     */
+
+    public boolean actualizarVendedor(int idVendedor, String nombre, String apellido, String email, String nivel, String estado) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call actualizar_vendedor(?, ?, ?, ?, ?, ?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.setString(2, nombre);
+            stmt.setString(3, apellido);
+            stmt.setString(4, email);
+            stmt.setString(5, nivel);
+            stmt.setString(6, estado);
+
+            stmt.execute();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 
     /**
