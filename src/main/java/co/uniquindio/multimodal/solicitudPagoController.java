@@ -9,14 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -72,7 +65,7 @@ public class solicitudPagoController {
     private TableColumn<SolicitudPago, String> estadoColumn;
 
     @FXML
-    private ComboBox<?> estadoFiltroComboBox;
+    private ComboBox<String> estadoFiltroComboBox;
 
     @FXML
     private TableColumn<SolicitudPago, Date> fechaColumn;
@@ -118,6 +111,35 @@ public class solicitudPagoController {
     @FXML
     void aprobarSolicitud(ActionEvent event) {
 
+        SolicitudPago solicitudSeleccionada = solicitudesTable.getSelectionModel().getSelectedItem();
+
+        if (solicitudSeleccionada != null) {
+            int solicitudId = solicitudSeleccionada.getId();
+            System.out.println("ID de Solicitud Seleccionada: " + solicitudId); // Agregar impresión para depuración
+
+            boolean aprobado = verificarLogin.aprobarSolicitudPago(solicitudId);
+
+            if (aprobado) {
+                mostrarAlerta("Éxito", "La solicitud de pago ha sido aprobada.");
+                solicitudSeleccionada.setEstado("Aprobado");
+                cargarSolicitudes();
+                solicitudesTable.refresh();
+            } else {
+                mostrarAlerta("Error", "No se pudo aprobar la solicitud de pago.");
+            }
+        } else {
+            mostrarAlerta("Advertencia", "Seleccione una solicitud para aprobar.");
+        }
+
+    }
+
+    // Método para mostrar alertas en la interfaz
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 
     @FXML
@@ -173,15 +195,77 @@ public class solicitudPagoController {
     @FXML
     void limpiarFiltros(ActionEvent event) {
 
+        busquedaField.clear();
+        fechaInicioPicker.setValue(null);
+        fechaFinPicker.setValue(null);
+        estadoFiltroComboBox.getSelectionModel().select("Todos");
+        cargarSolicitudes();
+
+
+
     }
 
     @FXML
     void rechazarSolicitud(ActionEvent event) {
 
+        // Obtener la solicitud seleccionada en la TableView
+        SolicitudPago solicitudSeleccionada = solicitudesTable.getSelectionModel().getSelectedItem();
+        if (solicitudSeleccionada != null) {
+            // Obtener el comentario de rechazo desde el área de texto
+            String comentarioRechazo = comentarioRechazoArea.getText();
+
+            // Validar que el comentario no esté vacío
+            if (comentarioRechazo.isEmpty()) {
+                mostrarAlerta("Advertencia", "Por favor ingrese un comentario de rechazo.");
+                return;
+            }
+
+            // Llamar al método de VerificarLogin para rechazar la solicitud
+            boolean exito = verificarLogin.rechazarSolicitudPago(solicitudSeleccionada.getId(), comentarioRechazo);
+
+            if (exito) {
+                mostrarAlerta("Éxito", "La solicitud ha sido rechazada correctamente.");
+                cargarSolicitudes();  // Refrescar la lista de solicitudes en la tabla
+            } else {
+                mostrarAlerta("Error", "No se pudo rechazar la solicitud.");
+            }
+        } else {
+            mostrarAlerta("Advertencia", "Por favor seleccione una solicitud para rechazar.");
+        }
+
     }
 
     @FXML
     void verHistorialSolicitudes(ActionEvent event) {
+
+        try {
+            // Cargar la interfaz de inicio de sesión
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("historialSolicitudesPago-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            // Obtener el tamaño de la pantalla completa
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Crear un nuevo Stage y establecer la nueva escena con las dimensiones de la pantalla
+            Stage newStage = new Stage();
+            newStage.setTitle("Historial");
+            newStage.setScene(scene);
+            newStage.setX(screenBounds.getMinX());
+            newStage.setY(screenBounds.getMinY());
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+            // Mostrar el nuevo Stage en pantalla completa
+            newStage.show();
+
+            // Cerrar el Stage actual si es necesario
+            Stage currentStage = (Stage) btnHistorial.getScene().getWindow();
+            currentStage.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar la interfaz de inicio de sesión.");
+        }
 
     }
 

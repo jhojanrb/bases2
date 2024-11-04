@@ -604,7 +604,8 @@ public class VerificarLogin {
                         rs.getString("vendedor"),
                         rs.getDate("fecha"),
                         rs.getDouble("monto"),
-                        rs.getString("estado")
+                        rs.getString("estado"),
+                        null
                 );
                 solicitudes.add(solicitud);
             }
@@ -900,6 +901,115 @@ public class VerificarLogin {
             return false;
         }
     }
+
+    /**
+     * APROBAR SOLICITUD DE PAGO
+     * @param solicitudId
+     * @return
+     */
+
+    // Método para aprobar solicitud de pago
+    public boolean aprobarSolicitudPago(int solicitudId) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call aprobar_solicitud_pago(?)}")) { // Verifica que el nombre sea exacto
+
+            stmt.setInt(1, solicitudId);
+            stmt.execute();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * RECHAZAR SOLICITUD PAGO
+     * @param idSolicitud
+     * @param comentario
+     * @return
+     */
+
+    public boolean rechazarSolicitudPago(int idSolicitud, String comentario) {
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+        boolean success = false;
+
+        try {
+            connection = getConnection();
+            String sql = "{ call rechazar_solicitud_pago(?, ?) }";
+            callableStatement = connection.prepareCall(sql);
+
+            // Establecer parámetros
+            callableStatement.setInt(1, idSolicitud);
+            callableStatement.setString(2, comentario);
+
+            // Ejecutar el procedimiento
+            callableStatement.execute();
+            success = true;
+        } catch (SQLException e) {
+            System.out.println("Error al rechazar la solicitud de pago: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (callableStatement != null) callableStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return success;
+    }
+
+    /**
+     * HISTORIAL DE SOLICITUDES DE PAGO
+     * @return
+     */
+
+    public List<SolicitudPago> obtenerHistorialSolicitudesPago() {
+        List<SolicitudPago> historial = new ArrayList<>();
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+
+        try {
+            connection = getConnection();
+            String sql = "{ call ver_historial_solicitudes_pago(?) }";
+            callableStatement = connection.prepareCall(sql);
+            callableStatement.registerOutParameter(1, OracleTypes.CURSOR);
+
+            // Ejecutar el procedimiento
+            callableStatement.execute();
+
+            // Obtener el resultado
+            ResultSet rs = (ResultSet) callableStatement.getObject(1);
+            while (rs.next()) {
+                SolicitudPago solicitud = new SolicitudPago(
+                        rs.getInt("id_solicitud"),
+                        rs.getString("vendedor"),
+                        rs.getDate("fecha"),
+                        rs.getDouble("monto"),
+                        rs.getString("estado"),
+                        rs.getString("comentario_rechazo")
+                );
+                historial.add(solicitud);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            System.out.println("Error al obtener el historial de solicitudes de pago: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (callableStatement != null) callableStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return historial;
+    }
+
 
 
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
@@ -14,57 +16,64 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="co.uniquindio.multimodal.solicitudPagoController">
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.HistorialSolicitudesPagoController">
     <top>
         <VBox spacing="10" style="-fx-background-color: #3498db; -fx-padding: 10;">
-            <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Gestión de Solicitudes de Pago" />
+            <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Historial de Solicitudes de Pago" />
             <HBox spacing="10">
                 <TextField fx:id="busquedaField" promptText="Buscar por nombre de vendedor" HBox.hgrow="ALWAYS" />
-                <ComboBox fx:id="estadoFiltroComboBox" onAction="#filtrar" promptText="Filtrar por estado" >
+                <ComboBox fx:id="estadoFiltroComboBox" promptText="Filtrar por estado">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="Insuficiente" />
+                            <String fx:value="Todos" />
+                            <String fx:value="Aprobado" />
+                            <String fx:value="Rechazado" />
                             <String fx:value="Pendiente" />
-                            <String fx:value="Todos"/>
+                            <String fx:value="Insuficiente" />
                         </FXCollections>
                     </items>
                 </ComboBox>
-                <DatePicker fx:id="fechaInicioPicker" promptText="Fecha solicitud" />
-                <Button fx:id="btnBuscar" onAction="#buscarSolicitudes" text="Buscar" style="-fx-cursor: hand"/>
-                <Button fx:id="btnLimpiar" onAction="#limpiarFiltros" text="Limpiar Filtros" style="-fx-cursor: hand"/>
+                <DatePicker fx:id="fechaInicioPicker" promptText="Fecha" />
+                <Button fx:id="btnBuscar" onAction="#buscarSolicitudes" style="-fx-cursor: hand" text="Buscar" />
+                <Button fx:id="btnLimpiar" onAction="#limpiarFiltros" style="-fx-cursor: hand" text="Limpiar Filtros" />
             </HBox>
         </VBox>
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS">
+        <SplitPane dividerPositions="0.7" VBox.vgrow="ALWAYS">
             <VBox>
-                <TableView fx:id="solicitudesTable" VBox.vgrow="ALWAYS">
+                <TableView fx:id="historialSolicitudesTable" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="idColumn" text="ID" />
                         <TableColumn fx:id="vendedorColumn" text="Vendedor" />
                         <TableColumn fx:id="fechaColumn" text="Fecha" />
                         <TableColumn fx:id="montoColumn" text="Monto" />
                         <TableColumn fx:id="estadoColumn" text="Estado" />
+                        <TableColumn fx:id="fechaResolucionColumn" prefWidth="152.79998779296875" text="Fecha Resolución" />
                     </columns>
                 </TableView>
                 <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10;">
-                    <Button fx:id="btnAprobar" onAction="#aprobarSolicitud" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Aprobar Seleccionada" />
-                    <Button fx:id="btnRechazar" onAction="#rechazarSolicitud" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Rechazar Seleccionada" />
+                    <Button fx:id="btnExportar" onAction="#exportarHistorial" style="-fx-background-color: #27ae60; -fx-cursor: hand" text="Exportar Historial" />
                     <Button fx:id="btnGenerarInforme" onAction="#generarInforme" style="-fx-background-color: #f39c12; -fx-cursor: hand" text="Generar Informe" />
                 </HBox>
             </VBox>
             <VBox>
                 <TitledPane collapsible="false" text="Detalles de la Solicitud" VBox.vgrow="ALWAYS">
                     <VBox spacing="10">
+                        <Label fx:id="detalleIdLabel" text="ID: " />
                         <Label fx:id="detalleVendedorLabel" text="Vendedor: " />
-                        <Label fx:id="detalleNivelLabel" text="Nivel: " />
-                        <Label fx:id="detalleVentasLabel" text="Ventas Recientes: " />
+                        <Label fx:id="detalleFechaSolicitudLabel" text="Fecha de Solicitud: " />
+                        <Label fx:id="detalleMontoLabel" text="Monto: " />
+                        <Label fx:id="detalleEstadoLabel" text="Estado: " />
+                        <Label fx:id="detalleFechaResolucionLabel" text="Fecha de Resolución: " />
+                        <Label fx:id="detalleNivelLabel" text="Nivel del Vendedor: " />
+                        <Label fx:id="detalleVentasLabel" text="Ventas del Período: " />
                         <Label fx:id="detalleComisionesLabel" text="Comisiones Generadas: " />
                         <Label fx:id="detalleCumplimientoMetasLabel" text="Cumplimiento de Metas: " />
-                        <TextArea fx:id="comentarioRechazoArea" promptText="Razón del rechazo" wrapText="true" />
+                        <TitledPane collapsible="true" text="Comentarios">
+                            <TextArea fx:id="comentariosArea" editable="false" wrapText="true" />
+                        </TitledPane>
                     </VBox>
                 </TitledPane>
             </VBox>
@@ -73,8 +82,7 @@
 
     <bottom>
         <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #3498db; -fx-padding: 10;">
-            <Button fx:id="btnHistorial" onAction="#verHistorialSolicitudes" text="Ver Historial de Solicitudes" style="-fx-cursor: hand" />
-            <Button fx:id="btnCerrar" onAction="#cerrarVentana" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Cerrar" />
+            <Button fx:id="btnVolver" onAction="#volverAGestionSolicitudes" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Volver a Gestión de Solicitudes" />
         </HBox>
     </bottom>
 </BorderPane>
