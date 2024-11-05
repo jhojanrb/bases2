@@ -1010,6 +1010,93 @@ public class VerificarLogin {
         return historial;
     }
 
+    /**
+     *
+     * @param idSolicitud
+     * @return
+     */
+
+
+    public SolicitudDetalles obtenerDetallesSolicitud(int idSolicitud) {
+        SolicitudDetalles detalles = null;
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{ call obtener_detalles_solicitud(?, ?) }")) {
+
+            stmt.setInt(1, idSolicitud);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+
+            try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
+                if (rs.next()) {
+                    detalles = new SolicitudDetalles(
+                            rs.getInt("id_solicitud"),
+                            rs.getString("vendedor"),
+                            rs.getString("nivel"),
+                            rs.getDouble("ventas_recientes"),
+                            rs.getDouble("comisiones_generadas"),
+                            rs.getString("cumplimiento_metas"),
+                            rs.getString("estado"),
+                            rs.getString("comentario_rechazo")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return detalles;
+    }
+
+    /**
+     * CONSULTAR O BUSCAR SOLICITUDES DE PAGO EN EL TABLEVIEW
+     * @param filtroNombreId
+     * @param estado
+     * @param fechaSolicitud
+     * @return
+     */
+
+    public List<SolicitudPago> consultarSolicitudesPago(String nombreId, String estado, java.sql.Date fecha) {
+        List<SolicitudPago> solicitudes = new ArrayList<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call consultar_solicitudes_pago(?, ?, ?, ?)}")) {
+
+            stmt.setString(1, nombreId);
+            stmt.setString(2, estado);
+            if (fecha != null) {
+                stmt.setDate(3, fecha);
+            } else {
+                stmt.setNull(3, java.sql.Types.DATE);
+            }
+
+            stmt.registerOutParameter(4, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(4);
+            while (rs.next()) {
+                SolicitudPago solicitud = new SolicitudPago(
+                        rs.getInt("id_solicitud"),
+                        rs.getString("vendedor"),
+                        rs.getDate("fecha"),
+                        rs.getDouble("monto"),
+                        rs.getString("estado"),
+                        rs.getString("comentario_rechazo")
+                );
+                solicitudes.add(solicitud);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return solicitudes;
+    }
+
+
+
+
+
+
+
 
 
 

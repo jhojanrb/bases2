@@ -1,5 +1,6 @@
 package co.uniquindio.multimodal;
 
+import co.uniquindio.multimodal.conexionBD.SolicitudDetalles;
 import co.uniquindio.multimodal.conexionBD.SolicitudPago;
 import co.uniquindio.multimodal.conexionBD.VerificarLogin;
 import javafx.collections.FXCollections;
@@ -11,11 +12,25 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
+
+import javafx.scene.input.MouseEvent;
+import javafx.scene.control.TableView;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
+
+
 
 public class solicitudPagoController {
 
@@ -92,16 +107,31 @@ public class solicitudPagoController {
 
     @FXML
     public void initialize() {
-        // Configuración de las columnas de la tabla
+        // Configuración de las columnas de la tabla de solicitudes
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         vendedorColumn.setCellValueFactory(new PropertyValueFactory<>("vendedor"));
         fechaColumn.setCellValueFactory(new PropertyValueFactory<>("fecha"));
         montoColumn.setCellValueFactory(new PropertyValueFactory<>("monto"));
         estadoColumn.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
-        // Cargar las solicitudes de pago
+        // Configurar el evento de doble clic en la fila de la tabla
+        solicitudesTable.setRowFactory(tv -> {
+            TableRow<SolicitudPago> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && (!row.isEmpty())) {
+                    SolicitudPago solicitudSeleccionada = row.getItem();
+                    cargarDetallesSolicitud(solicitudSeleccionada.getId()); // Llamamos al método para cargar los detalles
+                }
+            });
+            return row;
+        });
+
+        // Cargar las solicitudes de pago en la tabla
         cargarSolicitudes();
     }
+
+
+
 
     private void cargarSolicitudes() {
         ObservableList<SolicitudPago> solicitudes = FXCollections.observableArrayList(verificarLogin.obtenerSolicitudesPago());
@@ -142,10 +172,31 @@ public class solicitudPagoController {
         alert.showAndWait();
     }
 
+    // Formateador para convertir la fecha al formato requerido
+    //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     @FXML
     void buscarSolicitudes(ActionEvent event) {
+        String filtroNombreId = busquedaField.getText();
+        String estado = estadoFiltroComboBox.getValue();
+        java.sql.Date fechaSolicitud = (fechaInicioPicker.getValue() != null)
+                ? java.sql.Date.valueOf(fechaInicioPicker.getValue())
+                : null;
 
+        // Ajuste del estado a null si es "Todos"
+        if ("Todos".equals(estado)) {
+            estado = null;
+        }
+
+        // Realizar la consulta a través de verificarLogin
+        List<SolicitudPago> resultados = verificarLogin.consultarSolicitudesPago(filtroNombreId, estado, fechaSolicitud);
+        ObservableList<SolicitudPago> data = FXCollections.observableArrayList(resultados);
+        solicitudesTable.setItems(data);
     }
+
+
+
+
 
     @FXML
     void cerrarVentana(ActionEvent event) {
@@ -197,11 +248,10 @@ public class solicitudPagoController {
 
         busquedaField.clear();
         fechaInicioPicker.setValue(null);
-        fechaFinPicker.setValue(null);
         estadoFiltroComboBox.getSelectionModel().select("Todos");
+
+        // Recargar todas las solicitudes sin filtros
         cargarSolicitudes();
-
-
 
     }
 
@@ -268,5 +318,24 @@ public class solicitudPagoController {
         }
 
     }
+
+
+    private void cargarDetallesSolicitud(int idSolicitud) {
+        SolicitudDetalles detalles = verificarLogin.obtenerDetallesSolicitud(idSolicitud); // Llama al método en VerificarLogin
+
+        // Verificar que los detalles no estén vacíos antes de cargar
+        if (detalles != null) {
+            detalleVendedorLabel.setText("Vendedor: " + detalles.getVendedor());
+            detalleNivelLabel.setText("Nivel: " + detalles.getNivel());
+            detalleVentasLabel.setText("Ventas Recientes: $" + detalles.getVentasRecientes());
+            detalleComisionesLabel.setText("Comisiones Generadas: $" + detalles.getComisionesGeneradas());
+            detalleCumplimientoMetasLabel.setText("Cumplimiento de Metas: " + detalles.getCumplimientoMetas());
+        } else {
+            mostrarAlerta("Error", "No se pudieron cargar los detalles de la solicitud.");
+        }
+    }
+
+
+
 
 }
