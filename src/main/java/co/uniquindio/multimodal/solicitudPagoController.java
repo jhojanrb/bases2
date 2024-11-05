@@ -196,8 +196,6 @@ public class solicitudPagoController {
 
 
 
-
-
     @FXML
     void cerrarVentana(ActionEvent event) {
 

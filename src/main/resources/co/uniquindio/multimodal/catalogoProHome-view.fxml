@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.CatalogoHomeController">
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Catálogo de Productos" />
+            <HBox spacing="10">
+                <TextField fx:id="busquedaField" promptText="Buscar producto" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="categoriaFiltroComboBox" promptText="Filtrar por categoría">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Todas" />
+                            <String fx:value="Electrónica" />
+                            <String fx:value="Ropa" />
+                            <String fx:value="Hogar" />
+                            <String fx:value="Belleza" />
+                            <String fx:value="Deportes" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button fx:id="btnBuscar" onAction="#buscarProductos" style="-fx-cursor: hand" text="Buscar" />
+                <Button fx:id="btnLimpiar" onAction="#limpiarFiltros" style="-fx-cursor: hand" text="Limpiar Filtros" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.7" VBox.vgrow="ALWAYS">
+            <VBox>
+                <TableView fx:id="productosTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" />
+                        <TableColumn fx:id="nombreColumn" text="Nombre" />
+                        <TableColumn fx:id="categoriaColumn" text="Categoría" />
+                        <TableColumn fx:id="precioColumn" text="Precio" />
+                        <TableColumn fx:id="stockColumn" text="Stock" />
+                    </columns>
+                </TableView>
+                <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10;">
+                    <Button fx:id="btnAgregarProducto" onAction="#agregarProducto" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Agregar Producto" />
+                    <Button fx:id="btnEditarProducto" onAction="#editarProducto" style="-fx-background-color: #f39c12; -fx-cursor: hand" text="Editar Producto" />
+                    <Button fx:id="btnEliminarProducto" onAction="#eliminarProducto" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Eliminar Producto" />
+                </HBox>
+            </VBox>
+            <VBox>
+                <TitledPane collapsible="false" text="Detalles del Producto" VBox.vgrow="ALWAYS">
+                    <VBox spacing="10">
+                        <Label fx:id="detalleIdLabel" text="ID: " />
+                        <Label fx:id="detalleNombreLabel" text="Nombre: " />
+                        <Label fx:id="detalleCategoriaLabel" text="Categoría: " />
+                        <Label fx:id="detallePrecioLabel" text="Precio: " />
+                        <Label fx:id="detalleStockLabel" text="Stock: " />
+                        <Label fx:id="detalleDescripcionLabel" text="Descripción: " />
+                        <TextArea fx:id="descripcionArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS" />
+                        <Label fx:id="detalleComisionLabel" text="Comisión: " />
+                        <Label fx:id="detalleFechaCreacionLabel" text="Fecha de Creación: " />
+                        <Label fx:id="detalleUltimaActualizacionLabel" text="Última Actualización: " />
+                        <Button fx:id="btnAgregarImagen" onAction="#cargarImagen" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Agregar Imagen" />
+                        <ImageView fx:id="imagenProductoView" fitHeight="150" fitWidth="150" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../../../../../../2024-2/DCU/imgs/Black_Myth_Wukong_cover_art.jpg" />
+                     </image></ImageView>
+                    </VBox>
+                </TitledPane>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Button fx:id="btnExportar" onAction="#exportarCatalogo" style="-fx-background-color: #27ae60; -fx-cursor: hand" text="Exportar Catálogo" />
+            <Button fx:id="btnVolver" onAction="#volverAlDashboard" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Volver al Dashboard" />
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -1,6 +1,7 @@
 package co.uniquindio.multimodal;
 
 import co.uniquindio.multimodal.conexionBD.SolicitudPago;
+import co.uniquindio.multimodal.conexionBD.SolicitudDetalles;
 import co.uniquindio.multimodal.conexionBD.VerificarLogin;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,14 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -82,7 +76,7 @@ public class HistorialSolicitudesPagoController {
     private TableColumn<SolicitudPago, String> estadoColumn;
 
     @FXML
-    private ComboBox<?> estadoFiltroComboBox;
+    private ComboBox<String> estadoFiltroComboBox;
 
     @FXML
     private TableColumn<SolicitudPago, Date> fechaColumn;
@@ -107,6 +101,7 @@ public class HistorialSolicitudesPagoController {
 
     private VerificarLogin verificarLogin = new VerificarLogin();
 
+
     @FXML
     public void cargarHistorialSolicitudes() {
         // Obtener el historial de solicitudes del método de VerificarLogin
@@ -114,6 +109,27 @@ public class HistorialSolicitudesPagoController {
         ObservableList<SolicitudPago> data = FXCollections.observableArrayList(historial);
         historialSolicitudesTable.setItems(data);
     }
+
+    private void cargarDetallesSolicitud(int solicitudId) {
+        // Llamar al método que obtiene los detalles de la solicitud
+        SolicitudDetalles detalles = verificarLogin.obtenerDetallesSolicitud(solicitudId);
+
+        // Verificar que `detalles` no sea null y cargar la información en los labels
+        if (detalles != null) {
+            detalleIdLabel.setText("ID: " + detalles.getIdSolicitud());
+            detalleVendedorLabel.setText("Vendedor: " + detalles.getVendedor());
+            detalleFechaSolicitudLabel.setText("Fecha de Solicitud: 05/11/2024" );
+            detalleMontoLabel.setText("Monto: " + detalles.getVentasRecientes());
+            detalleEstadoLabel.setText("Estado: " + detalles.getEstado());
+            detalleFechaResolucionLabel.setText("Fecha de Resolución: 20/11/2024" );
+            detalleNivelLabel.setText("Nivel del Vendedor: " + detalles.getNivel());
+            detalleVentasLabel.setText("Ventas del Período: " + detalles.getVentasRecientes());
+            detalleComisionesLabel.setText("Comisiones Generadas: " + detalles.getComisionesGeneradas());
+            detalleCumplimientoMetasLabel.setText("Cumplimiento de Metas: " + detalles.getCumplimientoMetas());
+            comentariosArea.setText(detalles.getComentarioRechazo());
+        }
+    }
+
 
     @FXML
     public void initialize() {
@@ -127,12 +143,22 @@ public class HistorialSolicitudesPagoController {
 
         // Cargar el historial de solicitudes
         cargarHistorialSolicitudes();
+
+        // Configurar evento de doble clic para la tabla
+        historialSolicitudesTable.setRowFactory(tv -> {
+            TableRow<SolicitudPago> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    SolicitudPago solicitud = row.getItem();
+                    cargarDetallesSolicitud(solicitud.getId());
+                }
+            });
+            return row;
+        });
     }
 
-    @FXML
-    void buscarSolicitudes(ActionEvent event) {
 
-    }
+
 
     @FXML
     void exportarHistorial(ActionEvent event) {
@@ -146,8 +172,14 @@ public class HistorialSolicitudesPagoController {
 
     @FXML
     void limpiarFiltros(ActionEvent event) {
+        busquedaField.clear();
+        fechaInicioPicker.setValue(null);
+        estadoFiltroComboBox.getSelectionModel().select("Todos");
 
+        // Cargar todo el historial sin filtros
+        buscarSolicitudes(null);
     }
+
 
     @FXML
     void volverAGestionSolicitudes(ActionEvent event) {
@@ -183,4 +215,23 @@ public class HistorialSolicitudesPagoController {
 
     }
 
+    public void buscarSolicitudes(ActionEvent actionEvent) {
+
+        String filtroNombreId = busquedaField.getText().trim();
+        String estado = estadoFiltroComboBox.getValue();
+        java.sql.Date fechaSolicitud = (fechaInicioPicker.getValue() != null)
+                ? java.sql.Date.valueOf(fechaInicioPicker.getValue())
+                : null;
+
+        // Si el estado es "Todos", lo establecemos como null para que el procedimiento lo maneje
+        if ("Todos".equals(estado)) {
+            estado = null;
+        }
+
+        // Consultar el historial de solicitudes a través de verificarLogin
+        List<SolicitudPago> resultados = verificarLogin.consultarHistorialSolicitudes(
+                filtroNombreId.isEmpty() ? null : filtroNombreId, estado, fechaSolicitud);
+        ObservableList<SolicitudPago> data = FXCollections.observableArrayList(resultados);
+        historialSolicitudesTable.setItems(data);
+    }
 }

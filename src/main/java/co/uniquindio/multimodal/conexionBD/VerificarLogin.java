@@ -1091,6 +1091,42 @@ public class VerificarLogin {
         return solicitudes;
     }
 
+    public List<SolicitudPago> consultarHistorialSolicitudes(String nombreId, String estado, java.sql.Date fecha) {
+        List<SolicitudPago> solicitudes = new ArrayList<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call consultar_historial_solicitudes(?, ?, ?, ?)}")) {
+
+            stmt.setString(1, nombreId);
+            stmt.setString(2, estado);
+            if (fecha != null) {
+                stmt.setDate(3, fecha);
+            } else {
+                stmt.setNull(3, java.sql.Types.DATE);
+            }
+
+            stmt.registerOutParameter(4, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(4);
+            while (rs.next()) {
+                SolicitudPago solicitud = new SolicitudPago(
+                        rs.getInt("id_solicitud"),
+                        rs.getString("vendedor"),
+                        rs.getDate("fecha"),
+                        rs.getDouble("monto"),
+                        rs.getString("estado"),
+                        rs.getString("comentario_rechazo")
+                        //rs.getDate("fecha_resolucion")  // Agregar si has añadido esta fecha en SolicitudPago
+                );
+                solicitudes.add(solicitud);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return solicitudes;
+    }
+
 
 
 

@@ -28,8 +28,6 @@
                             <String fx:value="Todos" />
                             <String fx:value="Aprobado" />
                             <String fx:value="Rechazado" />
-                            <String fx:value="Pendiente" />
-                            <String fx:value="Insuficiente" />
                         </FXCollections>
                     </items>
                 </ComboBox>
