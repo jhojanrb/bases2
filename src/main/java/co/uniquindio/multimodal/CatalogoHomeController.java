@@ -185,6 +185,7 @@ public class CatalogoHomeController {
             imagenProductoView.setImage(imagenProducto);
 
             // Aquí podrías agregar la lógica para guardar la ruta o el archivo de imagen
+
             // asociado con el producto en la base de datos o en el modelo del producto
         }
     }
