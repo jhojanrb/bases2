@@ -1174,8 +1174,6 @@ public class VerificarLogin {
 
 
 
-
-
     /**
      * MAIN PRUEBAS
      * @param args
