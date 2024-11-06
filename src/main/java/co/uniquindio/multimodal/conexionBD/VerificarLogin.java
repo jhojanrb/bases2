@@ -1091,6 +1091,14 @@ public class VerificarLogin {
         return solicitudes;
     }
 
+    /**
+     * CONSULTA BUSCA EN LA TABLA DE HISTORIAL DE SOLICITUDES
+     * @param nombreId
+     * @param estado
+     * @param fecha
+     * @return
+     */
+
     public List<SolicitudPago> consultarHistorialSolicitudes(String nombreId, String estado, java.sql.Date fecha) {
         List<SolicitudPago> solicitudes = new ArrayList<>();
         try (Connection connection = getConnection();
@@ -1126,6 +1134,38 @@ public class VerificarLogin {
         }
         return solicitudes;
     }
+
+    /**
+     * CARGA LOS PRODUCTOS A LA TABLA
+     * @return
+     */
+
+    public List<Producto> obtenerProductos() {
+        List<Producto> productos = new ArrayList<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_productos(?)}")) {
+
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+            while (rs.next()) {
+                Producto producto = new Producto(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("categoria"),
+                        rs.getDouble("precio"),
+                        rs.getInt("stock")
+                );
+                productos.add(producto);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productos;
+    }
+
 
 
 

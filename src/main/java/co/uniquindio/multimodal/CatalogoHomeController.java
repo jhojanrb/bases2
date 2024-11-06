@@ -1,5 +1,9 @@
 package co.uniquindio.multimodal;
 
+import co.uniquindio.multimodal.conexionBD.Producto;
+import co.uniquindio.multimodal.conexionBD.VerificarLogin;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -20,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class CatalogoHomeController {
 
@@ -90,19 +96,40 @@ public class CatalogoHomeController {
     private ImageView imagenProductoView;
 
     @FXML
-    private TableColumn<?, ?> idColumn;
+    private TableColumn<Producto, Integer> idColumn;
 
     @FXML
-    private TableColumn<?, ?> nombreColumn;
+    private TableColumn<Producto, String> nombreColumn;
 
     @FXML
-    private TableColumn<?, ?> precioColumn;
+    private TableColumn<Producto, Double> precioColumn;
 
     @FXML
-    private TableView<?> productosTable;
+    private TableView<Producto> productosTable;
 
     @FXML
-    private TableColumn<?, ?> stockColumn;
+    private TableColumn<Producto, Integer> stockColumn;
+
+    private VerificarLogin verificarLogin = new VerificarLogin();
+
+    @FXML
+    public void initialize() {
+        // Configurar las columnas de la TableView
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        nombreColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        categoriaColumn.setCellValueFactory(new PropertyValueFactory<>("categoria"));
+        precioColumn.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        stockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
+
+        // Cargar los productos en la tabla
+        cargarProductos();
+    }
+
+    public void cargarProductos() {
+        List<Producto> productos = verificarLogin.obtenerProductos();
+        ObservableList<Producto> data = FXCollections.observableArrayList(productos);
+        productosTable.setItems(data);
+    }
 
     @FXML
     void agregarProducto(ActionEvent event) {
