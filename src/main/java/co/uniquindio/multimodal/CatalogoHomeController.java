@@ -20,7 +20,9 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CatalogoHomeController {
 
@@ -120,11 +122,27 @@ public class CatalogoHomeController {
     @FXML
     private TableColumn<Producto, Integer> stockColumn;
 
+    @FXML
+    private String rutaImagenSeleccionada; // Para almacenar la ruta de la imagen seleccionada
+
+
     private VerificarLogin verificarLogin = new VerificarLogin();
     private String rutaImagenPorDefecto = "file:/C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg";
 
+    private Map<String, Integer> categoriaMap = new HashMap<>();
+
+
     @FXML
     public void initialize() {
+
+        // Mapear nombres de categoría a sus IDs
+        categoriaMap.put("Electrónica", 1);
+        categoriaMap.put("Ropa", 2);
+        categoriaMap.put("Hogar", 3);
+        categoriaMap.put("Belleza", 4);
+        categoriaMap.put("Deportes", 5);
+        categoriaMap.put("Moda", 6);
+
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nombreColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         categoriaColumn.setCellValueFactory(new PropertyValueFactory<>("categoria"));
@@ -155,38 +173,101 @@ public class CatalogoHomeController {
         ProductoDetalles detalles = verificarLogin.obtenerDetallesProducto(idProducto);
 
         if (detalles != null) {
-            idField.setText(String.valueOf(detalles.getId()));
+            idField.setText(String.valueOf(detalles.getId()));  // Convertir a String
             nombreField.setText(detalles.getNombre());
             categoriaComboBox.setValue(detalles.getCategoria());
-            precioField.setText(String.valueOf(detalles.getPrecio()));
-            stockField.setText(String.valueOf(detalles.getStock()));
+            precioField.setText(String.valueOf(detalles.getPrecio()));  // Convertir a String
+            stockField.setText(String.valueOf(detalles.getStock()));  // Convertir a String
             descripcionArea.setText(detalles.getDescripcion());
 
-            // Ruta de imagen predeterminada si no existe una ruta para el producto
+            // Ruta por defecto de la imagen
+            String rutaImagenPorDefecto = "file:/C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg";
             String rutaImagen = detalles.getRutaImagen();
-            File archivoImagen;
 
-            if (rutaImagen != null && !rutaImagen.trim().isEmpty()) {
-                archivoImagen = new File(rutaImagen);
-            } else {
-                archivoImagen = new File("C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg"); // Ruta por defecto
-            }
+            // Verificar si la ruta de la imagen no es null y procesarla
+            if (rutaImagen != null && !rutaImagen.isEmpty()) {
+                File file;
+                if (rutaImagen.startsWith("file:")) {
+                    // Ruta ya en formato URI completo
+                    file = new File(rutaImagen.substring(5)); // eliminar "file:" para crear el archivo
+                } else {
+                    // Ruta relativa, crear archivo con ruta relativa al proyecto
+                    file = new File(rutaImagen);
+                }
 
-            if (archivoImagen.exists()) {
-                imagenProductoView.setImage(new Image(archivoImagen.toURI().toString()));
+                // Verificar si el archivo existe, de lo contrario usar imagen por defecto
+                if (file.exists()) {
+                    imagenProductoView.setImage(new Image(file.toURI().toString()));
+                } else {
+                    imagenProductoView.setImage(new Image(rutaImagenPorDefecto));
+                }
             } else {
-                // Mostrar un mensaje o icono de "imagen no disponible" si el archivo predeterminado tampoco existe
-                imagenProductoView.setImage(null); // O carga una imagen alternativa de "sin imagen"
+                imagenProductoView.setImage(new Image(rutaImagenPorDefecto));
             }
         }
     }
 
 
 
+
+
     @FXML
     void agregarProducto(ActionEvent event) {
+        try {
+            // Obtén los valores de los campos
+            String nombre = nombreField.getText();
+            String categoriaNombre = categoriaComboBox.getValue(); // Nombre de la categoría seleccionado
+            double precio = Double.parseDouble(precioField.getText());
+            int stock = Integer.parseInt(stockField.getText());
+            String descripcion = descripcionArea.getText();
+
+            // Obtén el ID de la categoría a partir del nombre
+            Integer categoriaId = categoriaMap.get(categoriaNombre);
+
+            // Ruta de imagen por defecto si no se seleccionó ninguna
+            if (rutaImagenSeleccionada == null || rutaImagenSeleccionada.isEmpty()) {
+                rutaImagenSeleccionada = "file:/C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg";
+            }
+
+            // Llama al método para agregar el producto en la base de datos
+            verificarLogin.agregarProducto(nombre, categoriaId, precio, stock, descripcion, rutaImagenSeleccionada);
+
+            // Refresca la tabla después de agregar el producto
+            cargarProductos();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
+    // Método para obtener el ID de la categoría basado en el nombre
+    private int obtenerCategoriaIdPorNombre(String categoria) {
+        switch (categoria.toLowerCase()) {
+            case "electrónica":
+                return 1;
+            case "ropa":
+                return 2;
+            case "hogar":
+                return 3;
+            case "belleza":
+                return 4;
+            case "deportes":
+                return 5;
+            default:
+                return 0; // O algún valor para indicar error
+        }
+    }
+
+    private void limpiarCampos() {
+        idField.clear();
+        nombreField.clear();
+        categoriaComboBox.setValue(null);
+        precioField.clear();
+        stockField.clear();
+        descripcionArea.clear();
+        imagenProductoView.setImage(null);
+        rutaImagenSeleccionada = null;
     }
 
     @FXML
@@ -211,6 +292,8 @@ public class CatalogoHomeController {
 
     @FXML
     void limpiarFiltros(ActionEvent event) {
+
+        limpiarCampos();
 
     }
 
@@ -256,17 +339,19 @@ public class CatalogoHomeController {
                 new FileChooser.ExtensionFilter("Archivos de Imagen", "*.png", "*.jpg", "*.jpeg")
         );
 
+        // Abre el cuadro de diálogo para seleccionar la imagen
         File file = fileChooser.showOpenDialog(imagenProductoView.getScene().getWindow());
 
         if (file != null) {
-            Image imagenProducto = new Image(file.toURI().toString());
+            // Guarda la ruta de la imagen seleccionada
+            rutaImagenSeleccionada = file.toURI().toString();
+
+            // Carga y muestra la imagen seleccionada en el ImageView
+            Image imagenProducto = new Image(rutaImagenSeleccionada);
             imagenProductoView.setImage(imagenProducto);
+
         }
     }
 
-    public void guardarProducto(ActionEvent actionEvent) {
-    }
 
-    public void cancelarEdicion(ActionEvent actionEvent) {
-    }
 }

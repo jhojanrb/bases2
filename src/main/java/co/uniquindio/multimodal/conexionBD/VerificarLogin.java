@@ -1200,6 +1200,35 @@ public class VerificarLogin {
         return detalles;
     }
 
+    /**
+     * METODO PARA AGREGAR UN PRODUCTO
+     * @param nombre
+     * @param categoriaId
+     * @param precio
+     * @param stock
+     * @param descripcion
+     * @param rutaImagen
+     */
+
+
+    public void agregarProducto(String nombre, int categoriaId, double precio, int stock, String descripcion, String rutaImagen) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call agregar_producto(?, ?, ?, ?, ?, ?)}")) {
+
+            stmt.setString(1, nombre);
+            stmt.setInt(2, categoriaId);
+            stmt.setDouble(3, precio);
+            stmt.setInt(4, stock);
+            stmt.setString(5, descripcion);
+            stmt.setString(6, rutaImagen);
+
+            stmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 
 
