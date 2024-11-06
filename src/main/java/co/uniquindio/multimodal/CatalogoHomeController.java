@@ -1,6 +1,7 @@
 package co.uniquindio.multimodal;
 
 import co.uniquindio.multimodal.conexionBD.Producto;
+import co.uniquindio.multimodal.conexionBD.ProductoDetalles;
 import co.uniquindio.multimodal.conexionBD.VerificarLogin;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,13 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -93,6 +88,21 @@ public class CatalogoHomeController {
     private Label detalleUltimaActualizacionLabel;
 
     @FXML
+    private TextField idField;
+
+    @FXML
+    private TextField nombreField;
+
+    @FXML
+    private TextField precioField;
+
+    @FXML
+    private TextField stockField;
+
+    @FXML
+    private ComboBox<String> categoriaComboBox;
+
+    @FXML
     private ImageView imagenProductoView;
 
     @FXML
@@ -111,18 +121,28 @@ public class CatalogoHomeController {
     private TableColumn<Producto, Integer> stockColumn;
 
     private VerificarLogin verificarLogin = new VerificarLogin();
+    private String rutaImagenPorDefecto = "file:/C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg";
 
     @FXML
     public void initialize() {
-        // Configurar las columnas de la TableView
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nombreColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         categoriaColumn.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         precioColumn.setCellValueFactory(new PropertyValueFactory<>("precio"));
         stockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
-        // Cargar los productos en la tabla
         cargarProductos();
+
+        productosTable.setRowFactory(tv -> {
+            TableRow<Producto> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Producto producto = row.getItem();
+                    mostrarDetallesProducto(producto.getId());
+                }
+            });
+            return row;
+        });
     }
 
     public void cargarProductos() {
@@ -131,8 +151,41 @@ public class CatalogoHomeController {
         productosTable.setItems(data);
     }
 
+    private void mostrarDetallesProducto(int idProducto) {
+        ProductoDetalles detalles = verificarLogin.obtenerDetallesProducto(idProducto);
+
+        if (detalles != null) {
+            idField.setText(String.valueOf(detalles.getId()));
+            nombreField.setText(detalles.getNombre());
+            categoriaComboBox.setValue(detalles.getCategoria());
+            precioField.setText(String.valueOf(detalles.getPrecio()));
+            stockField.setText(String.valueOf(detalles.getStock()));
+            descripcionArea.setText(detalles.getDescripcion());
+
+            // Ruta de imagen predeterminada si no existe una ruta para el producto
+            String rutaImagen = detalles.getRutaImagen();
+            File archivoImagen;
+
+            if (rutaImagen != null && !rutaImagen.trim().isEmpty()) {
+                archivoImagen = new File(rutaImagen);
+            } else {
+                archivoImagen = new File("C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg"); // Ruta por defecto
+            }
+
+            if (archivoImagen.exists()) {
+                imagenProductoView.setImage(new Image(archivoImagen.toURI().toString()));
+            } else {
+                // Mostrar un mensaje o icono de "imagen no disponible" si el archivo predeterminado tampoco existe
+                imagenProductoView.setImage(null); // O carga una imagen alternativa de "sin imagen"
+            }
+        }
+    }
+
+
+
     @FXML
     void agregarProducto(ActionEvent event) {
+
 
     }
 
@@ -195,25 +248,25 @@ public class CatalogoHomeController {
 
     }
 
-    public void cargarImagen(ActionEvent actionEvent) {
-
+    @FXML
+    void cargarImagen(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar Imagen del Producto");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Archivos de Imagen", "*.png", "*.jpg", "*.jpeg")
         );
 
-        // Abre el cuadro de diálogo para seleccionar la imagen
         File file = fileChooser.showOpenDialog(imagenProductoView.getScene().getWindow());
 
         if (file != null) {
-            // Carga y muestra la imagen seleccionada en el ImageView
             Image imagenProducto = new Image(file.toURI().toString());
             imagenProductoView.setImage(imagenProducto);
-
-            // Aquí podrías agregar la lógica para guardar la ruta o el archivo de imagen
-
-            // asociado con el producto en la base de datos o en el modelo del producto
         }
+    }
+
+    public void guardarProducto(ActionEvent actionEvent) {
+    }
+
+    public void cancelarEdicion(ActionEvent actionEvent) {
     }
 }

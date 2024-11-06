@@ -1166,6 +1166,39 @@ public class VerificarLogin {
         return productos;
     }
 
+    /**
+     * CARGAR LOS DETALLES EN LOS LABELS
+     * @param idProducto
+     * @return
+     */
+
+    public ProductoDetalles obtenerDetallesProducto(int idProducto) {
+        ProductoDetalles detalles = null;
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_detalles_producto(?, ?)}")) {
+
+            stmt.setInt(1, idProducto);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(2);
+            if (rs.next()) {
+                detalles = new ProductoDetalles(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("categoria"),
+                        rs.getDouble("precio"),
+                        rs.getInt("stock"),
+                        rs.getString("descripcion"),
+                        rs.getString("ruta_imagen")  // Nueva columna para la ruta de la imagen
+                );
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return detalles;
+    }
 
 
 
