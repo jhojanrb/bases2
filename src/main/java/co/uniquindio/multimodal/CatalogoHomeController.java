@@ -277,8 +277,20 @@ public class CatalogoHomeController {
 
     @FXML
     void editarProducto(ActionEvent event) {
+        int idProducto = Integer.parseInt(idField.getText());
+        String nombre = nombreField.getText();
+        String categoria = categoriaComboBox.getValue();  // Obtener el nombre de la categoría directamente
+        double precio = Double.parseDouble(precioField.getText());
+        int stock = Integer.parseInt(stockField.getText());
+        String descripcion = descripcionArea.getText();
+        String rutaImagen = (rutaImagenSeleccionada != null) ? rutaImagenSeleccionada : "file:/C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg";
 
+        verificarLogin.actualizarProducto(idProducto, nombre, categoria, precio, stock, descripcion, rutaImagen);
+
+        // Recargar los productos en la tabla después de la actualización
+        cargarProductos();
     }
+
 
     @FXML
     void eliminarProducto(ActionEvent event) {
@@ -343,13 +355,12 @@ public class CatalogoHomeController {
         File file = fileChooser.showOpenDialog(imagenProductoView.getScene().getWindow());
 
         if (file != null) {
-            // Guarda la ruta de la imagen seleccionada
-            rutaImagenSeleccionada = file.toURI().toString();
-
             // Carga y muestra la imagen seleccionada en el ImageView
-            Image imagenProducto = new Image(rutaImagenSeleccionada);
+            Image imagenProducto = new Image(file.toURI().toString());
             imagenProductoView.setImage(imagenProducto);
 
+            // Guarda la ruta de la imagen seleccionada
+            rutaImagenSeleccionada = file.toURI().toString();
         }
     }
 

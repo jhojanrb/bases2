@@ -1228,8 +1228,34 @@ public class VerificarLogin {
         }
     }
 
+    /**
+     * METODO QUE ACTUALIZA LOS CAMPOS DE UN PRODUCTO
+     * @param idProducto
+     * @param nombre
+     * @param categoria
+     * @param precio
+     * @param stock
+     * @param descripcion
+     * @param rutaImagen
+     */
 
+    public void actualizarProducto(int idProducto, String nombre, String categoria, double precio, int stock, String descripcion, String rutaImagen) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call actualizar_producto(?, ?, ?, ?, ?, ?, ?)}")) {
 
+            stmt.setInt(1, idProducto);
+            stmt.setString(2, nombre);
+            stmt.setString(3, categoria);
+            stmt.setDouble(4, precio);
+            stmt.setInt(5, stock);
+            stmt.setString(6, descripcion);
+            stmt.setString(7, rutaImagen);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
