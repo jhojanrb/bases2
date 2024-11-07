@@ -60,7 +60,7 @@ public class CatalogoHomeController {
     private TableColumn<?, ?> categoriaColumn;
 
     @FXML
-    private ComboBox<?> categoriaFiltroComboBox;
+    private ComboBox<String> categoriaFiltroComboBox;
 
     @FXML
     private TextArea descripcionArea;
@@ -270,6 +270,23 @@ public class CatalogoHomeController {
     @FXML
     void buscarProductos(ActionEvent event) {
 
+        String filtroNombreId = busquedaField.getText();
+        String categoria = categoriaFiltroComboBox.getValue();
+
+        // Si la categoría es "Todas", asignarla a null para que no filtre específicamente por categoría
+        if ("Todas".equals(categoria)) {
+            categoria = null;
+        }
+
+        // Ejecutar búsqueda y mostrar resultados
+        List<Producto> resultados = verificarLogin.buscarProductos(filtroNombreId, categoria);
+        ObservableList<Producto> data = FXCollections.observableArrayList(resultados);
+        productosTable.setItems(data);
+
+        if (resultados.isEmpty()) {
+            mostrarAlerta("Sin Resultados", "No se encontraron productos que coincidan con la búsqueda.", Alert.AlertType.INFORMATION);
+        }
+
     }
 
     @FXML
@@ -340,7 +357,11 @@ public class CatalogoHomeController {
     @FXML
     void limpiarFiltros(ActionEvent event) {
 
+        busquedaField.clear();
+        categoriaFiltroComboBox.getSelectionModel().select("Todas");
+
         limpiarCampos();
+        cargarProductos();
 
     }
 

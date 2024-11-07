@@ -1274,6 +1274,43 @@ public class VerificarLogin {
         }
     }
 
+    /**
+     * BUSCAR PRODUCTOS DEL CRUD ADMIN
+     * @param nombreId
+     * @param categoria
+     * @return
+     */
+
+    public List<Producto> buscarProductos(String nombreId, String categoria) {
+        List<Producto> productos = new ArrayList<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call buscar_productos(?, ?, ?)}")) {
+
+            stmt.setString(1, nombreId);
+            stmt.setString(2, categoria);
+            stmt.registerOutParameter(3, OracleTypes.CURSOR);
+
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(3);
+            while (rs.next()) {
+                Producto producto = new Producto(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("categoria"),
+                        rs.getDouble("precio"),
+                        rs.getInt("stock")
+                );
+                productos.add(producto);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productos;
+    }
+
+
 
 
 

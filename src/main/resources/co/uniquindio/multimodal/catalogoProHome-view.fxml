@@ -32,10 +32,13 @@
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Todas" />
                             <String fx:value="Electrónica" />
-                            <String fx:value="Ropa" />
+                            <String fx:value="Moda" />
                             <String fx:value="Hogar" />
-                            <String fx:value="Belleza" />
                             <String fx:value="Deportes" />
+                            <String fx:value="Belleza" />
+                            <String fx:value="Juguetes" />
+                            <String fx:value="Videojuegos" />
+                            <String fx:value="Salud" />
                         </FXCollections>
                     </items>
                 </ComboBox>
@@ -94,11 +97,14 @@
                                 <items>
                                     <FXCollections fx:factory="observableArrayList">
                                         <String fx:value="Electrónica" />
-                                        <String fx:value="Ropa" />
-                                        <String fx:value="Hogar" />
-                                        <String fx:value="Belleza" />
-                                        <String fx:value="Deportes" />
                                         <String fx:value="Moda" />
+                                        <String fx:value="Hogar" />
+                                        <String fx:value="Deportes" />
+                                        <String fx:value="Belleza" />
+                                        <String fx:value="Juguetes" />
+                                        <String fx:value="Videojuegos" />
+                                        <String fx:value="Salud" />
+
                                     </FXCollections>
                                 </items>
                             </ComboBox>
