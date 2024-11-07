@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 public class CatalogoHomeController {
 
@@ -180,22 +183,14 @@ public class CatalogoHomeController {
             stockField.setText(String.valueOf(detalles.getStock()));  // Convertir a String
             descripcionArea.setText(detalles.getDescripcion());
 
-            // Ruta por defecto de la imagen
-            String rutaImagenPorDefecto = "file:/C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg";
             String rutaImagen = detalles.getRutaImagen();
-
-            // Verificar si la ruta de la imagen no es null y procesarla
             if (rutaImagen != null && !rutaImagen.isEmpty()) {
                 File file;
                 if (rutaImagen.startsWith("file:")) {
-                    // Ruta ya en formato URI completo
-                    file = new File(rutaImagen.substring(5)); // eliminar "file:" para crear el archivo
+                    file = new File(rutaImagen.substring(5));
                 } else {
-                    // Ruta relativa, crear archivo con ruta relativa al proyecto
                     file = new File(rutaImagen);
                 }
-
-                // Verificar si el archivo existe, de lo contrario usar imagen por defecto
                 if (file.exists()) {
                     imagenProductoView.setImage(new Image(file.toURI().toString()));
                 } else {
@@ -204,38 +199,40 @@ public class CatalogoHomeController {
             } else {
                 imagenProductoView.setImage(new Image(rutaImagenPorDefecto));
             }
+        } else {
+            mostrarAlerta("Error", "No se encontraron detalles del producto.", AlertType.ERROR);
         }
     }
-
-
-
 
 
     @FXML
     void agregarProducto(ActionEvent event) {
         try {
-            // Obtén los valores de los campos
+            // Validar campos antes de proceder
+            if (nombreField.getText().isEmpty() || categoriaComboBox.getValue() == null || precioField.getText().isEmpty() || stockField.getText().isEmpty()) {
+                mostrarAlerta("Campos requeridos", "Todos los campos son obligatorios.", AlertType.WARNING);
+                return;
+            }
             String nombre = nombreField.getText();
-            String categoriaNombre = categoriaComboBox.getValue(); // Nombre de la categoría seleccionado
+            String categoriaNombre = categoriaComboBox.getValue();
             double precio = Double.parseDouble(precioField.getText());
             int stock = Integer.parseInt(stockField.getText());
             String descripcion = descripcionArea.getText();
 
-            // Obtén el ID de la categoría a partir del nombre
             Integer categoriaId = categoriaMap.get(categoriaNombre);
 
-            // Ruta de imagen por defecto si no se seleccionó ninguna
             if (rutaImagenSeleccionada == null || rutaImagenSeleccionada.isEmpty()) {
-                rutaImagenSeleccionada = "file:/C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg";
+                rutaImagenSeleccionada = rutaImagenPorDefecto;
             }
 
-            // Llama al método para agregar el producto en la base de datos
             verificarLogin.agregarProducto(nombre, categoriaId, precio, stock, descripcion, rutaImagenSeleccionada);
 
-            // Refresca la tabla después de agregar el producto
             cargarProductos();
-
+            mostrarAlerta("Éxito", "Producto agregado exitosamente.", AlertType.INFORMATION);
+        } catch (NumberFormatException e) {
+            mostrarAlerta("Error de formato", "Asegúrate de que el precio y el stock tengan valores numéricos válidos.", AlertType.ERROR);
         } catch (Exception e) {
+            mostrarAlerta("Error", "Ocurrió un error al agregar el producto.", AlertType.ERROR);
             e.printStackTrace();
         }
     }
@@ -277,24 +274,62 @@ public class CatalogoHomeController {
 
     @FXML
     void editarProducto(ActionEvent event) {
-        int idProducto = Integer.parseInt(idField.getText());
-        String nombre = nombreField.getText();
-        String categoria = categoriaComboBox.getValue();  // Obtener el nombre de la categoría directamente
-        double precio = Double.parseDouble(precioField.getText());
-        int stock = Integer.parseInt(stockField.getText());
-        String descripcion = descripcionArea.getText();
-        String rutaImagen = (rutaImagenSeleccionada != null) ? rutaImagenSeleccionada : "file:/C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg";
+        try {
+            int idProducto = Integer.parseInt(idField.getText());
+            String nombre = nombreField.getText();
+            String categoria = categoriaComboBox.getValue();
+            double precio = Double.parseDouble(precioField.getText());
+            int stock = Integer.parseInt(stockField.getText());
+            String descripcion = descripcionArea.getText();
+            String rutaImagen = (rutaImagenSeleccionada != null) ? rutaImagenSeleccionada : rutaImagenPorDefecto;
 
-        verificarLogin.actualizarProducto(idProducto, nombre, categoria, precio, stock, descripcion, rutaImagen);
+            verificarLogin.actualizarProducto(idProducto, nombre, categoria, precio, stock, descripcion, rutaImagen);
 
-        // Recargar los productos en la tabla después de la actualización
-        cargarProductos();
+            cargarProductos();
+            mostrarAlerta("Éxito", "Producto actualizado exitosamente.", Alert.AlertType.INFORMATION);
+        } catch (NumberFormatException e) {
+            mostrarAlerta("Error de formato", "Asegúrate de que el precio y el stock tengan valores numéricos válidos.", AlertType.ERROR);
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Ocurrió un error al actualizar el producto.", Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
     }
-
 
     @FXML
     void eliminarProducto(ActionEvent event) {
+        // Validar que se haya seleccionado un producto
+        if (idField.getText().isEmpty()) {
+            mostrarAlerta("Error", "Selecciona un producto para eliminar.", Alert.AlertType.WARNING);
+            return;
+        }
 
+        // Confirmación de eliminación
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText(null);
+        confirmacion.setContentText("¿Estás seguro de que deseas eliminar este producto?");
+
+        confirmacion.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    // Obtener el ID del producto y eliminarlo
+                    int idProducto = Integer.parseInt(idField.getText());
+                    verificarLogin.eliminarProducto(idProducto);
+
+                    // Recargar productos y limpiar campos
+                    cargarProductos();
+                    limpiarCampos();
+
+                    mostrarAlerta("Éxito", "Producto eliminado exitosamente.", Alert.AlertType.INFORMATION);
+
+                } catch (NumberFormatException e) {
+                    mostrarAlerta("Error", "ID de producto no válido.", Alert.AlertType.ERROR);
+                } catch (Exception e) {
+                    mostrarAlerta("Error", "Ocurrió un error al eliminar el producto.", Alert.AlertType.ERROR);
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @FXML
@@ -351,17 +386,21 @@ public class CatalogoHomeController {
                 new FileChooser.ExtensionFilter("Archivos de Imagen", "*.png", "*.jpg", "*.jpeg")
         );
 
-        // Abre el cuadro de diálogo para seleccionar la imagen
         File file = fileChooser.showOpenDialog(imagenProductoView.getScene().getWindow());
-
         if (file != null) {
-            // Carga y muestra la imagen seleccionada en el ImageView
             Image imagenProducto = new Image(file.toURI().toString());
             imagenProductoView.setImage(imagenProducto);
-
-            // Guarda la ruta de la imagen seleccionada
             rutaImagenSeleccionada = file.toURI().toString();
+            mostrarAlerta("Imagen cargada", "Imagen del producto seleccionada exitosamente.", Alert.AlertType.INFORMATION);
         }
+    }
+
+    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 
 

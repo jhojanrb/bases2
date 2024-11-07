@@ -1257,6 +1257,22 @@ public class VerificarLogin {
         }
     }
 
+    /**
+     * ELIMINA UN PRODUCTO DE LA BD
+     * @param idProducto
+     */
+
+    public void eliminarProducto(int idProducto) {
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call eliminar_producto(?)}")) {
+
+            stmt.setInt(1, idProducto);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
