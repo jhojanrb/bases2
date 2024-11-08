@@ -26,7 +26,6 @@
          <Button fx:id="btnDashboard" maxWidth="Infinity" onAction="#dashboard" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Dashboard" />
          <Button fx:id="btnGestionVendedores" maxWidth="Infinity" onAction="#gestionVendedores" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Gestión de Vendedores" />
          <Button fx:id="btnCatalogoProductos" maxWidth="Infinity" onAction="#catalogoProductos" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Catálogo de Productos" />
-         <Button fx:id="btnInventario" maxWidth="Infinity" onAction="#inventario" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Inventario" />
          <Button fx:id="btnComisiones" maxWidth="Infinity" onAction="#comisiones" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Comisiones" />
          <Button fx:id="btnReportes" maxWidth="Infinity" onAction="#reportes" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Reportes" />
       </VBox>

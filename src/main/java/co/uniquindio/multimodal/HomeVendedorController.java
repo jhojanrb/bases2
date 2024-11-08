@@ -1,5 +1,6 @@
 package co.uniquindio.multimodal;
 
+import co.uniquindio.multimodal.conexionBD.VerificarLogin;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -53,6 +54,26 @@ public class HomeVendedorController {
 
     @FXML
     private Label vendorNameLabel;
+
+    private int idVendedor;
+
+    private VerificarLogin verificarLogin = new VerificarLogin();
+
+    // Método para configurar el nombre y el ID del vendedor logueado
+    public void setVendorData(String nombreVendedor, int idVendedor) {
+        this.vendorNameLabel.setText("Bienvenido, " + nombreVendedor);
+        this.idVendedor = idVendedor;
+
+        // Cargar estadísticas después de establecer el ID del vendedor
+        cargarEstadisticasVendedor();
+    }
+
+    // Cargar las estadísticas de ventas, comisiones y afiliados directos
+    private void cargarEstadisticasVendedor() {
+        monthSalesLabel.setText(String.valueOf(verificarLogin.obtenerVentasMes(idVendedor)));
+        monthCommissionsLabel.setText(String.valueOf(verificarLogin.obtenerComisionesMes(idVendedor)));
+        directAffiliatesLabel.setText(String.valueOf(verificarLogin.obtenerAfiliadosDirectos(idVendedor)));
+    }
 
     @FXML
     void cerrarSesion(ActionEvent event) {

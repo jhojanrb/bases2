@@ -60,7 +60,7 @@ public class HelloController {
 
                 // Evaluar respuesta para administrador
                 if ("Login exitoso. Bienvenido Administrador".equals(resultado)) {
-                    cargarVista("home-view.fxml", "Home - Administrador");
+                    cargarVista("home-view.fxml", "Home - Administrador", null, null);
                 } else {
                     errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
                 }
@@ -68,16 +68,14 @@ public class HelloController {
             } else if (userType.equals("Vendedor")) {
                 // Intento de login para Vendedor (requiere ID de vendedor)
                 try {
-                    int idVendedor = Integer.parseInt(passwordField.getText()); // Ejemplo simple para capturar ID como contraseña
+                    int idVendedor = Integer.parseInt(passwordField.getText());
                     resultado = verificarLogin.loginVendedor(correo, idVendedor);
 
-                    // Evaluar respuesta para vendedor
                     if ("Login exitoso. Bienvenido".equals(resultado)) {
-                        cargarVista("homeVendedor-view.fxml", "Home - Vendedor");
+                        cargarVista("homeVendedor-view.fxml", "Home - Vendedor", correo, idVendedor);  // Pasa el nombre del vendedor
                     } else {
                         errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
                     }
-
                 } catch (NumberFormatException e) {
                     errorText.setText("El ID del vendedor debe ser numérico.");
                 }
@@ -90,7 +88,7 @@ public class HelloController {
 
                     // Evaluar respuesta para cliente
                     if ("Login exitoso. Bienvenido cliente".equals(resultado)) {
-                        cargarVista("homeCliente-view.fxml", "Home - Cliente");
+                        cargarVista("homeCliente-view.fxml", "Home - Cliente", null, null);
                     } else {
                         errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
                     }
@@ -109,29 +107,28 @@ public class HelloController {
 
 
     // Método auxiliar para cargar y mostrar una vista específica
-    private void cargarVista(String vista, String titulo) {
+    private void cargarVista(String vista, String titulo, String nombreVendedor, Integer idVendedor) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(vista));
+            Scene scene = new Scene(fxmlLoader.load());
 
-            // Obtiene el tamaño de la pantalla
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            // Obtén el controlador de la vista cargada
+            if (vista.equals("homeVendedor-view.fxml")) {
+                HomeVendedorController vendedorController = fxmlLoader.getController();
+                // Solo pasa datos de vendedor si nombreVendedor e idVendedor son válidos
+                if (nombreVendedor != null && idVendedor != null) {
+                    vendedorController.setVendorData(nombreVendedor, idVendedor);
+                }
+            }
 
-            // Crear una nueva escena con el tamaño de la pantalla completa
-            Scene scene = new Scene(fxmlLoader.load(), screenBounds.getWidth(), screenBounds.getHeight());
-
-            // Crear un nuevo Stage
+            // Ajustar la escena al tamaño de la pantalla completa
             Stage newStage = new Stage();
             newStage.setTitle(titulo);
             newStage.setScene(scene);
-
-            // Maximiza la nueva ventana para ocupar toda la pantalla
             newStage.setMaximized(true);
-
-
-            // Mostrar la nueva ventana
             newStage.show();
 
-            // Cierra el Stage actual si deseas
+            // Cierra la ventana actual de inicio de sesión
             Stage currentStage = (Stage) usernameField.getScene().getWindow();
             currentStage.close();
 
@@ -139,8 +136,8 @@ public class HelloController {
             errorText.setText("Error al cargar la interfaz de " + titulo.toLowerCase() + ".");
             e.printStackTrace();
         }
-
     }
+
 
     // Método para el enlace "¿Olvidó su contraseña?"
     @FXML

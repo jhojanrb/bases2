@@ -18,7 +18,7 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="co.uniquindio.multimodal.HomeVendedorController">
     <top>
-        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #2ecc71; -fx-padding: 10;">
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #1fdede; -fx-padding: 10;">
             <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Panel de Vendedor MLM" />
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="vendorNameLabel" style="-fx-text-fill: white;" text="Bienvenido, [Nombre del Vendedor]" />
@@ -27,13 +27,13 @@
     </top>
 
     <left>
-        <VBox spacing="10" style="-fx-background-color: #27ae60; -fx-padding: 10;">
-            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Dashboard" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Catálogo de Productos" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Mi Red de Afiliados" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Mis Comisiones" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Realizar Pedido" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #2ecc71;" text="Historial de Ventas" />
+        <VBox spacing="10" style="-fx-background-color: #1fdede; -fx-padding: 10;">
+            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Dashboard" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Catálogo de Productos" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Mi Red de Afiliados" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Mis Comisiones" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Realizar Pedido" />
+            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Historial de Ventas" />
         </VBox>
     </left>
 
@@ -94,7 +94,7 @@
     </center>
 
     <bottom>
-        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #27ae60; -fx-padding: 5;">
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #1fdede; -fx-padding: 5;">
             <Label style="-fx-text-fill: white;" text="© 2024 Sistema MLM. Todos los derechos reservados." />
         </HBox>
     </bottom>

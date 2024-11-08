@@ -1310,6 +1310,55 @@ public class VerificarLogin {
         return productos;
     }
 
+    /**
+     * METODOS DEL LABEL HOME VENDEDOR
+     * @param idVendedor
+     * @return
+     */
+
+    public int obtenerVentasMes(int idVendedor) {
+        int ventasMes = 0;
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_ventas_mes_vendedor(?, ?)}")) {
+            stmt.setInt(1, idVendedor);
+            stmt.registerOutParameter(2, java.sql.Types.INTEGER); // Cambiado a INTEGER
+            stmt.execute();
+            ventasMes = stmt.getInt(2);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ventasMes;
+    }
+
+    public int obtenerComisionesMes(int idVendedor) {
+        int comisionesMes = 0;
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_comisiones_mes_vendedor(?, ?)}")) {
+            stmt.setInt(1, idVendedor);
+            stmt.registerOutParameter(2, java.sql.Types.INTEGER); // Cambiado a INTEGER
+            stmt.execute();
+            comisionesMes = stmt.getInt(2);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return comisionesMes;
+    }
+
+    public int obtenerAfiliadosDirectos(int idVendedor) {
+        int afiliadosDirectos = 0;
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_afiliados_directos(?, ?)}")) {
+            stmt.setInt(1, idVendedor);
+            stmt.registerOutParameter(2, java.sql.Types.INTEGER); // Cambiado a INTEGER
+            stmt.execute();
+            afiliadosDirectos = stmt.getInt(2);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return afiliadosDirectos;
+    }
+
+
 
 
 
