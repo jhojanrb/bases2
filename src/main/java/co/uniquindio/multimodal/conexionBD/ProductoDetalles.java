@@ -9,6 +9,7 @@ public class ProductoDetalles {
     private String descripcion;
     private String rutaImagen;
 
+
     public ProductoDetalles(int id, String nombre, String categoria, double precio, int stock, String descripcion, String rutaImagen) {
         this.id = id;
         this.nombre = nombre;
@@ -20,6 +21,7 @@ public class ProductoDetalles {
     }
 
     // Getters y Setters
+
 
     public String getRutaImagen() {
         return rutaImagen;

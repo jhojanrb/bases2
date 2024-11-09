@@ -1,11 +1,11 @@
 package co.uniquindio.multimodal.conexionBD;
 
+import java.io.ByteArrayInputStream;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.util.*;
 
+import javafx.scene.image.Image;
 import oracle.jdbc.OracleTypes;
 
 
@@ -1167,38 +1167,51 @@ public class VerificarLogin {
     }
 
     /**
-     * CARGAR LOS DETALLES EN LOS LABELS
+     * CARGAR LOS DETALLES EN LOS LABELS ADMIN
      * @param idProducto
      * @return
      */
 
-    public ProductoDetalles obtenerDetallesProducto(int idProducto) {
+    public ProductoDetalles obtenerDetallesProductoAdmin(int idProducto) {
         ProductoDetalles detalles = null;
         try (Connection connection = getConnection();
-             CallableStatement stmt = connection.prepareCall("{call obtener_detalles_producto(?, ?)}")) {
+             CallableStatement stmt = connection.prepareCall("{call obtener_detalles_producto_admin(?, ?, ?, ?, ?, ?, ?, ?)}")) {
 
+            // Parámetro de entrada
             stmt.setInt(1, idProducto);
-            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+            // Parámetros de salida
+            stmt.registerOutParameter(2, java.sql.Types.INTEGER);  // p_id
+            stmt.registerOutParameter(3, java.sql.Types.VARCHAR);  // p_nombre
+            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);  // p_categoria
+            stmt.registerOutParameter(5, java.sql.Types.NUMERIC);  // p_precio
+            stmt.registerOutParameter(6, java.sql.Types.INTEGER);  // p_stock
+            stmt.registerOutParameter(7, java.sql.Types.VARCHAR);  // p_descripcion
+            stmt.registerOutParameter(8, java.sql.Types.VARCHAR);  // p_imagen (ruta de imagen como VARCHAR2)
+
+            // Ejecutar el procedimiento
             stmt.execute();
 
-            ResultSet rs = (ResultSet) stmt.getObject(2);
-            if (rs.next()) {
-                detalles = new ProductoDetalles(
-                        rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getString("categoria"),
-                        rs.getDouble("precio"),
-                        rs.getInt("stock"),
-                        rs.getString("descripcion"),
-                        rs.getString("ruta_imagen")  // Nueva columna para la ruta de la imagen
-                );
-            }
-            rs.close();
+            // Obtener los valores de salida
+            int id = stmt.getInt(2);
+            String nombre = stmt.getString(3);
+            String categoria = stmt.getString(4);
+            double precio = stmt.getDouble(5);
+            int stock = stmt.getInt(6);
+            String descripcion = stmt.getString(7);
+            String rutaImagen = stmt.getString(8);
+
+            // Crear el objeto ProductoDetalles con los datos obtenidos
+            detalles = new ProductoDetalles(id, nombre, categoria, precio, stock, descripcion, rutaImagen);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return detalles;
     }
+
+
+
 
     /**
      * METODO PARA AGREGAR UN PRODUCTO
@@ -1534,6 +1547,56 @@ public class VerificarLogin {
         }
         return productos;
     }
+
+    /**
+     * CARGAR DETALLES PRODUCTO VENDEDOR
+     * @param idProducto
+     * @return
+     */
+
+    public ProductoVendedor obtenerDetallesProducto(int idProducto) {
+        ProductoVendedor detalles = null;
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_detalles_producto(?, ?, ?, ?, ?, ?, ?, ?, ?)}")) {
+
+            // Parámetro de entrada
+            stmt.setInt(1, idProducto);
+
+            // Parámetros de salida
+            stmt.registerOutParameter(2, java.sql.Types.INTEGER);  // p_id
+            stmt.registerOutParameter(3, java.sql.Types.VARCHAR);  // p_nombre
+            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);  // p_categoria
+            stmt.registerOutParameter(5, java.sql.Types.NUMERIC);  // p_precio
+            stmt.registerOutParameter(6, java.sql.Types.NUMERIC);  // p_comision
+            stmt.registerOutParameter(7, java.sql.Types.INTEGER);  // p_stock
+            stmt.registerOutParameter(8, java.sql.Types.VARCHAR);  // p_descripcion
+            stmt.registerOutParameter(9, Types.VARCHAR);           // p_imagen como VARCHAR
+
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener valores de los parámetros de salida
+            int id = stmt.getInt(2);
+            String nombre = stmt.getString(3);
+            String categoria = stmt.getString(4);
+            double precio = stmt.getDouble(5);
+            double comision = stmt.getDouble(6);
+            int stock = stmt.getInt(7);
+            String descripcion = stmt.getString(8);
+            String rutaImagen = stmt.getString(9);  // Ahora obtenemos la ruta como VARCHAR directamente
+
+            // Crear objeto ProductoVendedor
+            detalles = new ProductoVendedor(id, nombre, categoria, precio, comision, stock, descripcion, rutaImagen);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return detalles;
+    }
+
+
 
 
 

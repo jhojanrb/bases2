@@ -1,5 +1,8 @@
 package co.uniquindio.multimodal;
 
+import co.uniquindio.multimodal.conexionBD.Producto;
+import co.uniquindio.multimodal.conexionBD.ProductoDetalles;
+import co.uniquindio.multimodal.conexionBD.ProductoVendedor;
 import co.uniquindio.multimodal.conexionBD.VerificarLogin;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,23 +11,32 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 public class CatalogoVendedorController {
 
+    @FXML
+    public TextField idField;
+
+    @FXML
+    public TextField nombreField;
+    @FXML
+    public TextField stockField;
+    @FXML
+    public TextField comisionField;
+    @FXML
+    public TextField categoriaField;
+    @FXML
+    public TextField precioField;
     @FXML
     private Button btnAgregarAFavoritos;
 
@@ -54,7 +66,7 @@ public class CatalogoVendedorController {
 
 
     @FXML
-    private ComboBox<?> categoriaFiltroComboBox;
+    private ComboBox<String> categoriaFiltroComboBox;
 
     @FXML
     private Label categoriaLabel;
@@ -108,6 +120,56 @@ public class CatalogoVendedorController {
         stockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
         cargarProductosConComision();
+
+        // Doble clic para mostrar detalles del producto
+        productosTable.setRowFactory(tv -> {
+            TableRow<VerificarLogin.ProductoConComision> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    VerificarLogin.ProductoConComision producto = row.getItem();
+                    mostrarDetallesProducto(producto.getId());
+                }
+            });
+            return row;
+        });
+    }
+
+    private void mostrarDetallesProducto(int idProducto) {
+        ProductoVendedor detalles = verificarLogin.obtenerDetallesProducto(idProducto);
+
+        if (detalles != null) {
+            idField.setText(String.valueOf(detalles.getId()));
+            nombreField.setText(detalles.getNombre());
+            categoriaField.setText(detalles.getCategoria());
+            precioField.setText(String.valueOf(detalles.getPrecio()));
+            comisionField.setText(String.valueOf(detalles.getComision()));
+            stockField.setText(String.valueOf(detalles.getStock()));
+            descripcionArea.setText(detalles.getDescripcion());
+
+            // Cargar la imagen
+            String rutaImagen = detalles.getRutaImagen();
+            if (rutaImagen != null && !rutaImagen.isEmpty()) {
+                // Asegúrate de que la ruta de imagen tiene el prefijo "file:" si es local
+                if (!rutaImagen.startsWith("file:")) {
+                    rutaImagen = "file:/" + rutaImagen;
+                }
+                imagenProductoView.setImage(new Image(rutaImagen));
+            } else {
+                // Cargar imagen por defecto si no se encuentra la imagen
+                imagenProductoView.setImage(new Image("file:/C:/2024-2/bases 2/PROYECTO/imagenes/image.jpg")); // Cambia esta ruta por la de tu imagen predeterminada
+            }
+        } else {
+            mostrarAlerta("Error", "No se encontraron detalles del producto.", Alert.AlertType.ERROR);
+        }
+    }
+
+
+    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 
     private void cargarProductosConComision() {

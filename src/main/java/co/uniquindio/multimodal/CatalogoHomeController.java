@@ -173,14 +173,14 @@ public class CatalogoHomeController {
     }
 
     private void mostrarDetallesProducto(int idProducto) {
-        ProductoDetalles detalles = verificarLogin.obtenerDetallesProducto(idProducto);
+        ProductoDetalles detalles = verificarLogin.obtenerDetallesProductoAdmin(idProducto);
 
         if (detalles != null) {
-            idField.setText(String.valueOf(detalles.getId()));  // Convertir a String
+            idField.setText(String.valueOf(detalles.getId()));
             nombreField.setText(detalles.getNombre());
             categoriaComboBox.setValue(detalles.getCategoria());
-            precioField.setText(String.valueOf(detalles.getPrecio()));  // Convertir a String
-            stockField.setText(String.valueOf(detalles.getStock()));  // Convertir a String
+            precioField.setText(String.valueOf(detalles.getPrecio()));
+            stockField.setText(String.valueOf(detalles.getStock()));
             descripcionArea.setText(detalles.getDescripcion());
 
             String rutaImagen = detalles.getRutaImagen();
@@ -203,6 +203,7 @@ public class CatalogoHomeController {
             mostrarAlerta("Error", "No se encontraron detalles del producto.", AlertType.ERROR);
         }
     }
+
 
 
     @FXML

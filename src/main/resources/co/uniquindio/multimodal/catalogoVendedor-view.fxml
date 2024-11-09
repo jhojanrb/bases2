@@ -22,7 +22,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.CatalogoVendedorController">
     <top>
-        <VBox spacing="10" style="-fx-background-color: #3498db; -fx-padding: 10;">
+        <VBox spacing="10" style="-fx-background-color: #1fdede; -fx-padding: 10;">
             <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Catálogo de Productos - Vendedor" />
             <HBox spacing="10">
                 <TextField fx:id="busquedaField" promptText="Buscar producto" HBox.hgrow="ALWAYS" />
@@ -73,22 +73,22 @@
                         </padding>
 
                         <Label style="-fx-font-weight: bold;" text="ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Label fx:id="idLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <TextField fx:id="idField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                         <Label style="-fx-font-weight: bold;" text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <Label fx:id="nombreLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="nombreField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                         <Label style="-fx-font-weight: bold;" text="Categoría:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                        <Label fx:id="categoriaLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="categoriaField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                         <Label style="-fx-font-weight: bold;" text="Precio:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                        <Label fx:id="precioLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField fx:id="precioField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                         <Label style="-fx-font-weight: bold;" text="Comisión:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                        <Label fx:id="comisionLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextField fx:id="comisionField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
                         <Label style="-fx-font-weight: bold;" text="Stock Disponible:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                        <Label fx:id="stockLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <TextField fx:id="stockField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
                         <Label style="-fx-font-weight: bold;" text="Descripción:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
                         <TextArea fx:id="descripcionArea" editable="false" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="6" />
@@ -121,7 +121,7 @@
     </center>
 
     <bottom>
-        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #3498db; -fx-padding: 10;">
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #1fdede; -fx-padding: 10;">
             <Button fx:id="btnExportarCatalogo" onAction="#exportarCatalogo" style="-fx-background-color: #27ae60; -fx-cursor: hand" text="Exportar Catálogo" />
             <Button fx:id="btnVolver" onAction="#volverAlDashboard" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Volver al Dashboard" />
         </HBox>
