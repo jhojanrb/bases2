@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="co.uniquindio.multimodal.HomeVendedorController">
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.HomeVendedorController">
     <top>
         <HBox alignment="CENTER_LEFT" style="-fx-background-color: #1fdede; -fx-padding: 10;">
             <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Panel de Vendedor MLM" />
@@ -28,12 +28,12 @@
 
     <left>
         <VBox spacing="10" style="-fx-background-color: #1fdede; -fx-padding: 10;">
-            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Dashboard" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Catálogo de Productos" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Mi Red de Afiliados" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Mis Comisiones" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Realizar Pedido" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #3381d3;" text="Historial de Ventas" />
+            <Button fx:id="btnDashboard" maxWidth="Infinity" onAction="#Dashboard" style="-fx-background-color: #3381d3; -fx-cursor: hand" text="Dashboard" />
+            <Button fx:id="btnCatalogo" maxWidth="Infinity" onAction="#Catalogo" style="-fx-background-color: #3381d3; -fx-cursor: hand" text="Catálogo de Productos" />
+            <Button fx:id="btnRed" maxWidth="Infinity" onAction="#Red" style="-fx-background-color: #3381d3; -fx-cursor: hand" text="Mi Red de Afiliados" />
+            <Button fx:id="btnComisiones" maxWidth="Infinity" onAction="#Comisiones" style="-fx-background-color: #3381d3; -fx-cursor: hand" text="Mis Comisiones" />
+            <Button fx:id="btnPedidos" maxWidth="Infinity" onAction="#Pedidos" style="-fx-background-color: #3381d3; -fx-cursor: hand" text="Realizar Pedido" />
+            <Button fx:id="btnHistorial" maxWidth="Infinity" onAction="#Historial" style="-fx-background-color: #3381d3; -fx-cursor: hand" text="Historial de Ventas" />
         </VBox>
     </left>
 
@@ -78,10 +78,10 @@
                 <TitledPane expanded="true" text="Últimas Ventas">
                     <TableView fx:id="recentSalesTable" prefHeight="200">
                         <columns>
-                            <TableColumn prefWidth="100" text="Fecha" />
-                            <TableColumn prefWidth="200" text="Producto" />
-                            <TableColumn prefWidth="100" text="Cantidad" />
-                            <TableColumn prefWidth="100" text="Total" />
+                            <TableColumn fx:id="fechaColumn" prefWidth="133.59997444152827" text="Fecha" />
+                            <TableColumn fx:id="productoColumn" prefWidth="168.00003051757812" text="Producto" />
+                            <TableColumn fx:id="cantidadColumn" prefWidth="100" text="Cantidad" />
+                            <TableColumn fx:id="totalColumn" prefWidth="100" text="Total" />
                         </columns>
                     </TableView>
                 </TitledPane>

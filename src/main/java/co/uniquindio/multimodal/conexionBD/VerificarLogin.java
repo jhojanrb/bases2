@@ -1358,8 +1358,182 @@ public class VerificarLogin {
         return afiliadosDirectos;
     }
 
+    /**
+     * METODO QUE OBTIENE EL PROGRESO DEL VENDEDOR
+     * @param idVendedor
+     * @return
+     */
+
+    public Map<String, Object> obtenerProgresoNivel(int idVendedor) {
+        Map<String, Object> progresoData = new HashMap<>();
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_progreso_nivel(?, ?, ?, ?, ?)}")) {
+
+            // Parámetros de entrada y salida
+            stmt.setInt(1, idVendedor);
+            stmt.registerOutParameter(2, java.sql.Types.VARCHAR); // p_nivel_actual
+            stmt.registerOutParameter(3, java.sql.Types.VARCHAR); // p_siguiente_nivel
+            stmt.registerOutParameter(4, Types.INTEGER);  // p_progreso
+            stmt.registerOutParameter(5, java.sql.Types.VARCHAR); // p_detalle_progreso
+
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Almacenar los resultados en el mapa
+            progresoData.put("nivelActual", stmt.getString(2));
+            progresoData.put("siguienteNivel", stmt.getString(3));
+            progresoData.put("progreso", stmt.getDouble(4));
+            progresoData.put("detalleProgreso", stmt.getString(5));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return progresoData;
+    }
+
+    /**
+     * CARGAR RENDIMIENTO VENTAS HOME VENDEDOR
+     * @param idVendedor
+     * @return
+     */
+
+    public Map<String, Double> obtenerRendimientoVentas(int idVendedor) {
+        Map<String, Double> rendimientoVentas = new HashMap<>();
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_rendimiento_ventas(?, ?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(2);
+            while (rs.next()) {
+                String mes = rs.getString("mes");
+                Double ventasMensuales = rs.getDouble("ventas_mensuales");
+                rendimientoVentas.put(mes, ventasMensuales);
+            }
+            rs.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rendimientoVentas;
+    }
+
+    /**
+     * CARGAR VENTAS RECIENTES EN LA TABLA HOME VENDEDOR
+     */
 
 
+    // Clase auxiliar para representar una venta reciente
+    public static class VentaReciente {
+        private String fecha;
+        private String producto;
+        private int cantidad;
+        private double total;
+
+        public VentaReciente(String fecha, String producto, int cantidad, double total) {
+            this.fecha = fecha;
+            this.producto = producto;
+            this.cantidad = cantidad;
+            this.total = total;
+        }
+
+        public String getFecha() { return fecha; }
+        public String getProducto() { return producto; }
+        public int getCantidad() { return cantidad; }
+        public double getTotal() { return total; }
+    }
+
+    // Método para obtener las últimas ventas de un vendedor
+    public List<VentaReciente> obtenerUltimasVentas(int idVendedor) {
+        List<VentaReciente> ultimasVentas = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_ultimas_ventas(?, ?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(2);
+            while (rs.next()) {
+                String fecha = rs.getString("fecha");
+                String producto = rs.getString("producto");
+                int cantidad = rs.getInt("cantidad");
+                double total = rs.getDouble("total");
+
+                ultimasVentas.add(new VentaReciente(fecha, producto, cantidad, total));
+            }
+            rs.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ultimasVentas;
+    }
+
+    /**
+     * METODO Y CLASE AUXILIAR PARA CARGAR LOS PRODUCTOS EN EL TABLE DEL CATALOGO DEL VENDEDOR
+     */
+
+    // Clase auxiliar para representar la información de un producto con comisión
+    public static class ProductoConComision {
+        private int id;
+        private String nombre;
+        private String categoria;
+        private double precio;
+        private double comisionPromedio;
+        private int stock;
+
+        public ProductoConComision(int id, String nombre, String categoria, double precio, double comisionPromedio, int stock) {
+            this.id = id;
+            this.nombre = nombre;
+            this.categoria = categoria;
+            this.precio = precio;
+            this.comisionPromedio = comisionPromedio;
+            this.stock = stock;
+        }
+
+        public int getId() { return id; }
+        public String getNombre() { return nombre; }
+        public String getCategoria() { return categoria; }
+        public double getPrecio() { return precio; }
+        public double getComisionPromedio() { return comisionPromedio; }
+        public int getStock() { return stock; }
+    }
+
+    // Método para obtener la información de productos con comisión
+    public List<ProductoConComision> obtenerProductosConComision() {
+        List<ProductoConComision> productos = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_informacion_productos_con_comision(?)}")) {
+
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombre");
+                String categoria = rs.getString("categoria");
+                double precio = rs.getDouble("precio");
+                double comisionPromedio = rs.getDouble("comision_promedio");
+                int stock = rs.getInt("stock");
+
+                productos.add(new ProductoConComision(id, nombre, categoria, precio, comisionPromedio, stock));
+            }
+            rs.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productos;
+    }
 
 
 

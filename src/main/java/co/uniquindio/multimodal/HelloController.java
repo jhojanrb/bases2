@@ -1,5 +1,6 @@
 package co.uniquindio.multimodal;
 
+import co.uniquindio.multimodal.conexionBD.SessionData;
 import co.uniquindio.multimodal.conexionBD.VerificarLogin;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -72,6 +73,8 @@ public class HelloController {
                     resultado = verificarLogin.loginVendedor(correo, idVendedor);
 
                     if ("Login exitoso. Bienvenido".equals(resultado)) {
+
+                        SessionData.setVendorData(correo, idVendedor);
                         cargarVista("homeVendedor-view.fxml", "Home - Vendedor", correo, idVendedor);  // Pasa el nombre del vendedor
                     } else {
                         errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
