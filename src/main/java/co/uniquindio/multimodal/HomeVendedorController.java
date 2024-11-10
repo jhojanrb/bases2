@@ -256,7 +256,41 @@ public class HomeVendedorController {
 
     public void Red(ActionEvent event) {
 
+        try {
+            // Cargar la interfaz de Red de Afiliados
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("redAfiliadosVendedor-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            // Obtener el controlador de la vista de Red de Afiliados
+            RedAfiliadosVendedorController afiliadosController = fxmlLoader.getController();
+
+            // Establecer el ID del vendedor en el controlador
+            int idVendedor = 1005319/* Asigna aquí el ID real del vendedor */;
+            afiliadosController.setIdVendedor(idVendedor);
+
+            // Configurar el nuevo Stage para mostrar la vista
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            Stage newStage = new Stage();
+            newStage.setTitle("Afiliados Vendedor");
+            newStage.setScene(scene);
+            newStage.setX(screenBounds.getMinX());
+            newStage.setY(screenBounds.getMinY());
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+            // Mostrar el nuevo Stage en pantalla completa
+            newStage.show();
+
+            // Cerrar el Stage actual si es necesario
+            Stage currentStage = (Stage) btnCatalogo.getScene().getWindow();
+            currentStage.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar la interfaz de red de afiliados.");
+        }
     }
+
 
     public void Comisiones(ActionEvent event) {
 

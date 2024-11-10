@@ -185,7 +185,24 @@ public class CatalogoVendedorController {
 
     @FXML
     void buscarProductos(ActionEvent event) {
+        String filtroNombreId = busquedaField.getText();
+        String categoria = categoriaFiltroComboBox.getValue();
 
+        // Si la categoría es "Todas", asigna null para que no filtre específicamente por categoría
+        if ("Todas".equals(categoria)) {
+            categoria = null;
+        }
+
+        // Llama al método que interactúa con la base de datos y obtiene los productos
+        List<VerificarLogin.ProductoConComision> resultados = verificarLogin.buscarProductosVendedor(filtroNombreId, categoria);
+
+        // Verifica si hay resultados y actualiza la tabla
+        if (resultados != null) {
+            ObservableList<VerificarLogin.ProductoConComision> productosData = FXCollections.observableArrayList(resultados);
+            productosTable.setItems(productosData);
+        } else {
+            mostrarAlerta("Sin Resultados", "No se encontraron productos que coincidan con la búsqueda.", Alert.AlertType.INFORMATION);
+        }
     }
 
     @FXML
@@ -205,6 +222,11 @@ public class CatalogoVendedorController {
 
     @FXML
     void limpiarFiltros(ActionEvent event) {
+
+        categoriaFiltroComboBox.getSelectionModel().select("Todas");
+        busquedaField.clear();
+
+        cargarProductosConComision();
 
     }
 

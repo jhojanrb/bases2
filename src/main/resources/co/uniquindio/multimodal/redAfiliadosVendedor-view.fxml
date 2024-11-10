@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.RedAfiliadosVendedorController">
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 20;" text="Mi Red de Afiliados" />
+            <HBox spacing="10">
+                <TextField fx:id="busquedaField" promptText="Buscar afiliado" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="nivelFiltroComboBox" promptText="Filtrar por nivel">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Todos" />
+                            <String fx:value="Platino" />
+                            <String fx:value="Bronze" />
+                            <String fx:value="Plate" />
+                            <String fx:value="Gold" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button fx:id="btnBuscar" onAction="#buscarAfiliados" style="-fx-cursor: hand" text="Buscar" />
+                <Button fx:id="btnLimpiar" onAction="#limpiarFiltros" style="-fx-cursor: hand" text="Limpiar Filtros" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS">
+            <VBox>
+                <TableView fx:id="afiliadosTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" />
+                        <TableColumn fx:id="nombreColumn" text="Nombre" />
+                        <TableColumn fx:id="nivelColumn" text="Nivel" />
+                        <TableColumn fx:id="fechaAfilacionColumn" prefWidth="125.59999084472656" text="Fecha de Afiliación" />
+                        <TableColumn fx:id="ventasTotalesColumn" prefWidth="104.800048828125" text="Ventas Totales" />
+                        <TableColumn fx:id="comisionesGeneradasColumn" minWidth="8.79998779296875" prefWidth="136.80001831054688" text="Comisiones Generadas" />
+                    </columns>
+                </TableView>
+                <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10;">
+                    <Button fx:id="btnVerDetalles" onAction="#verDetallesAfiliado" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Ver Detalles" />
+                    <Button fx:id="btnContactar" onAction="#contactarAfiliado" style="-fx-background-color: #f39c12; -fx-cursor: hand" text="Contactar" />
+                </HBox>
+            </VBox>
+            <VBox>
+                <TitledPane collapsible="false" text="Resumen de la Red" VBox.vgrow="ALWAYS">
+                    <VBox spacing="10">
+                        <GridPane hgap="10" vgap="10">
+                            <padding>
+                                <Insets bottom="10" left="10" right="10" top="10" />
+                            </padding>
+
+                            <Label style="-fx-font-weight: bold;" text="Total de Afiliados:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label fx:id="totalAfiliadosLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                            <Label style="-fx-font-weight: bold;" text="Ventas Totales de la Red:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <Label fx:id="ventasTotalesRedLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                            <Label style="-fx-font-weight: bold;" text="Comisiones Totales Generadas:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <Label fx:id="comisionesTotalesLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="NEVER" />
+                                <ColumnConstraints hgrow="ALWAYS" />
+                            </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                        </GridPane>
+
+                        <PieChart fx:id="distribucionNivelesPieChart" title="Distribución de Afiliados por Nivel" />
+
+                        <HBox alignment="CENTER" spacing="10">
+                            <Button fx:id="btnGenerarInforme" onAction="#generarInformeRed" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Generar Informe" />
+                            <Button fx:id="btnExportarDatos" onAction="#exportarDatosRed" style="-fx-background-color: #27ae60; -fx-cursor: hand" text="Exportar Datos" />
+                        </HBox>
+                    </VBox>
+                </TitledPane>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Button fx:id="btnAgregarAfiliado" onAction="#agregarNuevoAfiliado" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Agregar Nuevo Afiliado" />
+            <Button fx:id="btnVolver" onAction="#volverAlDashboard" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Volver al Dashboard" />
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -108,7 +108,6 @@ public class HelloController {
     }
 
 
-
     // Método auxiliar para cargar y mostrar una vista específica
     private void cargarVista(String vista, String titulo, String nombreVendedor, Integer idVendedor) {
         try {
@@ -122,7 +121,13 @@ public class HelloController {
                 if (nombreVendedor != null && idVendedor != null) {
                     vendedorController.setVendorData(nombreVendedor, idVendedor);
                 }
+            }else if (vista.equals("redAfiliadosVendedor-view.fxml")) {  // Cuando la vista es de catálogo
+                RedAfiliadosVendedorController afiliadosVendedorController = fxmlLoader.getController();
+                if (idVendedor != null) {
+                    afiliadosVendedorController.setIdVendedor(idVendedor);  // Pasa el idVendedor
+                }
             }
+
 
             // Ajustar la escena al tamaño de la pantalla completa
             Stage newStage = new Stage();

@@ -5,6 +5,7 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
+import javafx.scene.chart.PieChart;
 import javafx.scene.image.Image;
 import oracle.jdbc.OracleTypes;
 
@@ -1595,6 +1596,199 @@ public class VerificarLogin {
 
         return detalles;
     }
+
+    /**
+     * METODO PARA BUSCAR LOS PRODUCTOS DE LA TABLE EN EL CATALOGO DEL VENDEDOR
+     * @param filtroNombreId
+     * @param categoria
+     * @return
+     */
+
+    public List<ProductoConComision> buscarProductosVendedor(String filtroNombreId, String categoria) {
+        List<ProductoConComision> productos = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call buscar_productos_vendedor(?, ?, ?)}")) {
+
+            // Establece los parámetros del procedimiento
+            stmt.setString(1, filtroNombreId != null && !filtroNombreId.isEmpty() ? filtroNombreId : null);
+            stmt.setString(2, categoria != null && !categoria.isEmpty() ? categoria : null);
+            stmt.registerOutParameter(3, OracleTypes.CURSOR);
+
+            // Ejecuta el procedimiento
+            stmt.execute();
+
+            // Procesa los resultados
+            ResultSet rs = (ResultSet) stmt.getObject(3);
+            while (rs.next()) {
+                ProductoConComision producto = new ProductoConComision(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("categoria"),
+                        rs.getDouble("precio"),
+                        rs.getDouble("comision_promedio"),  // Ajusta si el nombre de columna en la BD es distinto
+                        rs.getInt("stock")
+                );
+                productos.add(producto);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return productos;
+    }
+
+    /**
+     * CARGA LOS AFILIADOS A LA TABLA DE MI RED DE AFILIADOS DEL VENDEDOR
+     * @param idVendedor
+     * @return
+     */
+
+    public List<Afiliado> obtenerAfiliadosVendedor(int idVendedor) {
+        List<Afiliado> afiliados = new ArrayList<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_afiliados_vendedor(?, ?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(2);
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombre");
+                String nivel = rs.getString("nivel");
+                Date fechaAfiliacion = rs.getDate("fecha_afiliacion");
+                double ventasTotales = rs.getDouble("ventas_totales");
+                double comisionesGeneradas = rs.getDouble("comisiones_generadas");
+
+                Afiliado afiliado = new Afiliado(id, nombre, nivel, fechaAfiliacion, ventasTotales, comisionesGeneradas);
+                afiliados.add(afiliado);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Afiliados obtenidos: " + afiliados.size());
+        return afiliados;
+    }
+
+    /**
+     * CARGA LA INFORMACION EN EL DIAGRAMA DE PASTE EN RED AFILIADOS DEL VENDEDOR
+     * @param idVendedor
+     * @return
+     */
+
+    public List<PieChart.Data> obtenerDistribucionNivelesAfiliados(int idVendedor) {
+        List<PieChart.Data> data = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_distribucion_niveles_afiliados(?, ?)}")) {
+
+            stmt.setInt(1, idVendedor);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(2);
+
+            // Depuración: verifica los resultados de la consulta
+            System.out.println("Datos de distribución de niveles para ID de vendedor: " + idVendedor);
+
+            while (rs.next()) {
+                String nivel = rs.getString("nivel");
+                int cantidadAfiliados = rs.getInt("cantidad_afiliados");
+                System.out.println("Nivel: " + nivel + ", Cantidad de Afiliados: " + cantidadAfiliados);
+                data.add(new PieChart.Data(nivel, cantidadAfiliados));
+            }
+
+            rs.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+    /**
+     * CARGAR INFORMACION DE LA RED DEL VENDEDOR EN LOS LABELS
+     * @param idVendedor
+     * @return
+     */
+
+    public Map<String, Double> obtenerTotalesVendedor(int idVendedor) {
+        Map<String, Double> resultados = new HashMap<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_totales_vendedor(?, ?, ?, ?)}")) {
+
+            stmt.setInt(1, idVendedor);
+
+            stmt.registerOutParameter(2, Types.NUMERIC); // p_total_afiliados
+            stmt.registerOutParameter(3, Types.NUMERIC); // p_ventas_totales_red
+            stmt.registerOutParameter(4, Types.NUMERIC); // p_comisiones_totales
+
+            stmt.execute();
+
+            resultados.put("totalAfiliados", stmt.getDouble(2));
+            resultados.put("ventasTotalesRed", stmt.getDouble(3));
+            resultados.put("comisionesTotales", stmt.getDouble(4));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultados;
+    }
+
+    /**
+     * BUSCAR AFILIADOS EN LA VISTA DE RED DEL VENDEDOR
+     * @param idVendedor
+     * @param nombreAfiliado
+     * @param nivelFiltro
+     * @return
+     */
+
+    public List<Afiliado> buscarAfiliados(int idVendedor, String nombreAfiliado, String nivelFiltro) {
+        List<Afiliado> afiliados = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call buscar_afiliados(?, ?, ?, ?)}")) {
+
+            // Configurar los parámetros de entrada
+            stmt.setInt(1, idVendedor);
+            stmt.setString(2, nombreAfiliado);
+            stmt.setString(3, nivelFiltro);
+
+            // Configurar el cursor de salida
+            stmt.registerOutParameter(4, OracleTypes.CURSOR);
+
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener el cursor de resultados
+            ResultSet rs = (ResultSet) stmt.getObject(4);
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombre");
+                String nivel = rs.getString("nivel");
+                Date fechaAfiliacion = rs.getDate("fecha_afiliacion");
+                double ventasTotales = rs.getDouble("ventas_totales");
+                double comisionesGeneradas = rs.getDouble("comisiones_generadas");
+
+                // Crear un nuevo objeto Afiliado y añadirlo a la lista
+                Afiliado afiliado = new Afiliado(id, nombre, nivel, fechaAfiliacion, ventasTotales, comisionesGeneradas);
+                afiliados.add(afiliado);
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return afiliados;
+    }
+
 
 
 
