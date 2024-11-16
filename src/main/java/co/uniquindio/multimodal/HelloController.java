@@ -61,7 +61,7 @@ public class HelloController {
 
                 // Evaluar respuesta para administrador
                 if ("Login exitoso. Bienvenido Administrador".equals(resultado)) {
-                    cargarVista("home-view.fxml", "Home - Administrador", null, null);
+                    cargarVista("home-view.fxml", "Home - Administrador", null, null, null, null);
                 } else {
                     errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
                 }
@@ -75,7 +75,7 @@ public class HelloController {
                     if ("Login exitoso. Bienvenido".equals(resultado)) {
 
                         SessionData.setVendorData(correo, idVendedor);
-                        cargarVista("homeVendedor-view.fxml", "Home - Vendedor", correo, idVendedor);  // Pasa el nombre del vendedor
+                        cargarVista("homeVendedor-view.fxml", "Home - Vendedor", correo, idVendedor, null, null);  // Pasa el nombre del vendedor
                     } else {
                         errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
                     }
@@ -89,9 +89,11 @@ public class HelloController {
                     int idCliente = Integer.parseInt(passwordField.getText()); // Ejemplo simple para capturar ID como contraseña
                     resultado = verificarLogin.loginCliente(correo, idCliente);
 
+                    String nombreCliente = verificarLogin.obtenerNombreClienteVista(idCliente);
+
                     // Evaluar respuesta para cliente
                     if ("Login exitoso. Bienvenido cliente".equals(resultado)) {
-                        cargarVista("homeCliente-view.fxml", "Home - Cliente", null, null);
+                        cargarVista("homeCliente-view.fxml", "Home - Cliente", null, null, nombreCliente, idCliente);
                     } else {
                         errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");
                     }
@@ -109,7 +111,7 @@ public class HelloController {
 
 
     // Método auxiliar para cargar y mostrar una vista específica
-    private void cargarVista(String vista, String titulo, String nombreVendedor, Integer idVendedor) {
+    private void cargarVista(String vista, String titulo, String nombreVendedor, Integer idVendedor, String nombreUsuario, Integer idUsuario) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(vista));
             Scene scene = new Scene(fxmlLoader.load());
@@ -125,6 +127,12 @@ public class HelloController {
                 RedAfiliadosVendedorController afiliadosVendedorController = fxmlLoader.getController();
                 if (idVendedor != null) {
                     afiliadosVendedorController.setIdVendedor(idVendedor);  // Pasa el idVendedor
+                }
+            } else if (vista.equals("homeCliente-view.fxml")) {
+                // Cuando la vista es del cliente
+                HomeClienteController clienteController = fxmlLoader.getController();
+                if (nombreUsuario != null && idUsuario != null) {
+                    clienteController.setClientData(nombreUsuario, idUsuario);
                 }
             }
 

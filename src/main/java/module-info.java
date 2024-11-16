@@ -6,6 +6,10 @@ module co.uniquindio.multimodal {
     requires java.sql;
     requires ojdbc8;
     requires java.desktop;
+    requires itextpdf;
+    requires java.mail;
+    requires java.http.client;
+
 
     opens co.uniquindio.multimodal to javafx.fxml;
     exports co.uniquindio.multimodal;

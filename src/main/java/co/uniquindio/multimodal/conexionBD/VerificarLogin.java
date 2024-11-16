@@ -1,13 +1,34 @@
 package co.uniquindio.multimodal.conexionBD;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
+import co.uniquindio.multimodal.HistorialSolicitudesPagoController;
 import javafx.scene.chart.PieChart;
 import javafx.scene.image.Image;
 import oracle.jdbc.OracleTypes;
+
+//imports email
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.Properties;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import com.sendgrid.*;
+import java.io.IOException;
 
 
 public class VerificarLogin {
@@ -1789,6 +1810,113 @@ public class VerificarLogin {
         return afiliados;
     }
 
+    /**
+     * EXPORTAR PDF DEL HISOTRIAL DE SOLICITUDES DE LA VISTA ADMINISTRADOR
+     * @param filePath
+     * @throws DocumentException
+     * @throws IOException
+     */
+
+    public void exportarHistorialPDF(String filePath) throws DocumentException, IOException {
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        document.open();
+
+        // Título
+        document.add(new Paragraph("Historial de Solicitudes de Pago", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
+        document.add(Chunk.NEWLINE);
+
+        // Crear tabla PDF con las columnas de solicitud
+        PdfPTable table = new PdfPTable(5); // Número de columnas
+        table.setWidthPercentage(100);
+
+        // Añadir encabezados de columna
+        table.addCell("ID");
+        table.addCell("Vendedor");
+        table.addCell("Fecha");
+        table.addCell("Monto");
+        table.addCell("Estado");
+
+        // Llenar la tabla con los datos de solicitudes
+        List<SolicitudPago> historial = obtenerHistorialSolicitudesPago();
+        for (SolicitudPago solicitud : historial) {
+            table.addCell(String.valueOf(solicitud.getId()));
+            table.addCell(solicitud.getVendedor());
+            table.addCell(solicitud.getFecha().toString());
+            table.addCell(String.valueOf(solicitud.getMonto()));
+            table.addCell(solicitud.getEstado());
+        }
+
+        // Agregar la tabla al documento
+        document.add(table);
+        document.close();
+    }
+
+    /**
+     * OBTIENE EL NOMBRE DEL CLIENTE PARA SETEARLO EN SU VISTA
+     * @param idCliente
+     * @return
+     */
+
+    public String obtenerNombreClienteVista(int idCliente) {
+        String nombreCliente = null;
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_nombre_cliente(?, ?)}")) {
+
+            // Parámetro de entrada
+            stmt.setInt(1, idCliente);
+
+            // Parámetro de salida
+            stmt.registerOutParameter(2, java.sql.Types.VARCHAR);
+
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener el resultado
+            nombreCliente = stmt.getString(2);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return nombreCliente;
+    }
+
+    /**
+     * OBTENER PRODUCTOS DESTACADOS EN LA VISTA DEL CLIENTE
+     * @return
+     */
+
+
+    public List<ProductoCliente> obtenerProductosDestacados() {
+        List<ProductoCliente> productosDestacados = new ArrayList<>();
+        System.out.println("Obteniendo productos destacados...");
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_productos_destacados(?)}")) {
+
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+            while (rs.next()) {
+                ProductoCliente producto = new ProductoCliente(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getDouble("precio"),
+                        rs.getString("imagen")
+                );
+                productosDestacados.add(producto);
+                System.out.println("Producto obtenido: " + producto.getNombre());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return productosDestacados;
+    }
 
 
 
@@ -1818,6 +1946,11 @@ public class VerificarLogin {
         String clienteEmail = "lore@gmail.com";
         int clienteId = 1099682; // Ejemplo de ID de vendedor
         System.out.println(verificarLogin.loginCliente(clienteEmail, clienteId));
+
+
+
+
+
 
         // Mostrar el resultado
         //System.out.println(resultado);
