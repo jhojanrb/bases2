@@ -1918,6 +1918,135 @@ public class VerificarLogin {
         return productosDestacados;
     }
 
+    /**
+     * Obtiene los pedidos recientes del cliente para cargarlos en su vista principal
+     * @param clienteId
+     * @return
+     */
+
+    public List<PedidoReciente> obtenerPedidosRecientesCliente(int clienteId) {
+        List<PedidoReciente> pedidosRecientes = new ArrayList<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call Obtener_Pedidos_Recientes_Cliente(?, ?)}")) {
+
+            stmt.setInt(1, clienteId);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(2);
+            while (rs.next()) {
+                PedidoReciente pedido = new PedidoReciente(
+                        rs.getInt("Nº Pedido"),
+                        rs.getString("Fecha"),
+                        rs.getDouble("Total"),
+                        rs.getString("Estado")
+                );
+                pedidosRecientes.add(pedido);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return pedidosRecientes;
+    }
+
+
+    /**
+     * OBTIENE EL ESTADO DE LOS PEDIDOS ACTUALES DEL CLIENTE EN EL HOME DE EL MISMO
+     * @param clienteId
+     * @return
+     */
+    public List<PedidoActual> obtenerEstadoPedidosActualesCliente(int idCliente) {
+        List<PedidoActual> pedidosActuales = new ArrayList<>();
+
+        if (idCliente == 0) {
+            idCliente = 1099682; // ID de prueba
+        }
+        System.out.println("Cliente ID enviado al procedimiento: " + idCliente);
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call Obtener_Estado_Pedidos_Actuales_Cliente(?, ?)}")) {
+
+            stmt.setInt(1, idCliente);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(2);
+
+            int count = 0; // Contador para depuración
+            while (rs.next()) {
+                int numeroPedido = rs.getInt("Nº Pedido");
+                double progreso = rs.getDouble("Progreso");
+                String estado = rs.getString("Estado");
+                System.out.println("Pedido obtenido: " + numeroPedido + ", Progreso: " + progreso + ", Estado: " + estado);
+
+                pedidosActuales.add(new PedidoActual(numeroPedido, progreso, estado));
+                count++;
+            }
+            System.out.println("Total pedidos obtenidos del ResultSet: " + count);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return pedidosActuales;
+    }
+
+    /**
+     * OBTIENE LOS PRODUCTOS EN LA PARTE DEL CATALOGO DEL CLIENTE
+     * @return
+     */
+
+    public List<ProductoCliente> obtenerProductosTendencia() {
+        List<ProductoCliente> productos = new ArrayList<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call obtener_productos_tendencia(?)}")) {
+
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+                while (rs.next()) {
+                    int id = rs.getInt("ID");
+                    String nombre = rs.getString("Nombre");
+                    double precio = rs.getDouble("Precio");
+                    String rutaImagen = rs.getString("Ruta_Imagen");
+                    productos.add(new ProductoCliente(id, nombre, precio, rutaImagen));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productos;
+    }
+
+    /**
+     * OBTIENE LOS PRODUCTOS EN LA TABLA DE CATALOGO DEL CLIENTE
+     * @return
+     */
+
+    public List<ProductoCatalogo> obtenerProductosCatalogoCliente() {
+        List<ProductoCatalogo> productos = new ArrayList<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call OBTENER_PRODUCTOS_CATALOGO_CLIENTE(?)}")) {
+
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
+                while (rs.next()) {
+                    String nombre = rs.getString("Nombre");
+                    String categoria = rs.getString("Categoría");
+                    double precio = rs.getDouble("Precio");
+                    int stock = rs.getInt("Stock");
+                    productos.add(new ProductoCatalogo(nombre, categoria, precio, stock));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productos;
+    }
+
 
 
 

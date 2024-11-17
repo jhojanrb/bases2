@@ -93,6 +93,7 @@ public class HelloController {
 
                     // Evaluar respuesta para cliente
                     if ("Login exitoso. Bienvenido cliente".equals(resultado)) {
+                        SessionData.setClienteData(correo, idCliente);
                         cargarVista("homeCliente-view.fxml", "Home - Cliente", null, null, nombreCliente, idCliente);
                     } else {
                         errorText.setText(resultado != null ? resultado : "Error: no se pudo completar el login.");

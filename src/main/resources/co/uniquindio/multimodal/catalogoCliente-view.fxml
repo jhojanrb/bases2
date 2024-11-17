@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.uniquindio.multimodal.CatalogoProductosClienteController">
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #3498db; -fx-padding: 10;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 24;" text="Catálogo de Productos" />
+            <HBox spacing="10">
+                <TextField fx:id="busquedaField" promptText="Buscar productos" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="categoriaFiltroComboBox" promptText="Filtrar por categoría">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Todas" />
+                            <String fx:value="Electrónica" />
+                            <String fx:value="Ropa" />
+                            <String fx:value="Hogar" />
+                            <String fx:value="Belleza" />
+                            <String fx:value="Deportes" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button fx:id="btnBuscar" onAction="#buscarProductos" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Buscar" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox spacing="20" style="-fx-padding: 20;">
+                <TitledPane fx:id="productosDestacados" expanded="true" text="Tendencias">
+                    <GridPane hgap="10" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="100" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="100" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="100" />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="150.0" prefHeight="150.0" vgrow="SOMETIMES" />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                        </rowConstraints>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="0">
+                            <ImageView fx:id="imagePro1" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro1" style="-fx-font-weight: bold;" text="Smartphone X" />
+                            <Label fx:id="precio1" text="599.99" />
+                            <Button fx:id="añadir1" onAction="#añadirCarro1" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="1">
+                            <ImageView fx:id="imagePro2" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro2" style="-fx-font-weight: bold;" text="Auriculares Inalámbricos" />
+                            <Label fx:id="precio2" text="129.99" />
+                            <Button fx:id="añadir2" onAction="#añadirCarro2" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="2">
+                            <ImageView fx:id="imagePro3" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro3" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio3" text="249.99" />
+                            <Button fx:id="añadir3" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <ImageView fx:id="imagePro4" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro4" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio4" text="249.99" />
+                            <Button fx:id="añadir4" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <ImageView fx:id="imagePro5" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro5" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio5" text="249.99" />
+                            <Button fx:id="añadir5" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                            <ImageView fx:id="imagePro6" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro6" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio6" text="249.99" />
+                            <Button fx:id="añadir6" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <ImageView fx:id="imagePro7" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro7" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio7" text="249.99" />
+                            <Button fx:id="añadir7" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <ImageView fx:id="imagePro8" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro8" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio8" text="249.99" />
+                            <Button fx:id="añadir8" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                            <ImageView fx:id="imagePro9" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro9" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio9" text="249.99" />
+                            <Button fx:id="añadir9" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                            <ImageView fx:id="imagePro10" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro10" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio10" text="249.99" />
+                            <Button fx:id="añadir10" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                            <ImageView fx:id="imagePro11" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro11" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio11" text="249.99" />
+                            <Button fx:id="añadir11" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                        <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                            <ImageView fx:id="imagePro12" fitHeight="100" fitWidth="100" preserveRatio="true">
+                                <Image url="@../../../images/sparking_zero-1.jpg" />
+                            </ImageView>
+                            <Label fx:id="namePro12" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
+                            <Label fx:id="precio12" text="249.99" />
+                            <Button fx:id="añadir12" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                        </VBox>
+                    </GridPane>
+                </TitledPane>
+
+                <TitledPane fx:id="todosLosProductos" expanded="true" text="Todos los Productos">
+                    <TableView fx:id="productosTable">
+                        <columns>
+                            <TableColumn fx:id="nombreColumn" prefWidth="97.59999542236346" text="Nombre" />
+                            <TableColumn fx:id="categoriaColumn" prefWidth="99.20001220703125" text="Categoría" />
+                            <TableColumn fx:id="precioColumn" prefWidth="79.19998168945312" text="Precio" />
+                            <TableColumn fx:id="stockColumn" prefWidth="66.4000244140625" text="Stock" />
+                        </columns>
+                    </TableView>
+                </TitledPane>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <right>
+        <VBox spacing="10" style="-fx-padding: 10; -fx-background-color: #ecf0f1;">
+            <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Carrito de Compras" />
+            <ListView fx:id="carritoListView" VBox.vgrow="ALWAYS" />
+            <Label fx:id="totalLabel" style="-fx-font-weight: bold;" text="Total: $0.00" />
+            <Button fx:id="btnRealizarPedido" onAction="#realizarPedido" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Realizar Pedido" />
+        </VBox>
+    </right>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10; -fx-background-color: #3498db;">
+            <Button fx:id="btnVerPedidos" onAction="#verPedidos" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Ver Mis Pedidos" />
+            <Button fx:id="btnVolver" onAction="#volver" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Volver" />
+        </HBox>
+    </bottom>
+</BorderPane>

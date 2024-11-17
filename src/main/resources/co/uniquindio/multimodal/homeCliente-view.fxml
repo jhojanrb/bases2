@@ -37,11 +37,11 @@
 
     <left>
         <VBox spacing="10" style="-fx-background-color: #2980b9; -fx-padding: 10;">
-            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Inicio" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Catálogo de Productos" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Mis Pedidos" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Mi Perfil" />
-            <Button maxWidth="Infinity" style="-fx-background-color: #3498db;" text="Contacto" />
+            <Button maxWidth="Infinity" fx:id="btninicio" onAction="#inicio" style="-fx-background-color: #88bff6; -fx-cursor: hand" text="Inicio" />
+            <Button maxWidth="Infinity" fx:id="btnCatalogo" onAction="#catalogo" style="-fx-background-color: #88bff6; -fx-cursor: hand" text="Catálogo de Productos" />
+            <Button maxWidth="Infinity" fx:id="btnMisPedidos" onAction="#pedidos" style="-fx-background-color: #88bff6; -fx-cursor: hand" text="Mis Pedidos" />
+            <Button maxWidth="Infinity" fx:id="btnPerfil" onAction="#perfil" style="-fx-background-color: #88bff6; -fx-cursor: hand" text="Mi Perfil" />
+            <Button maxWidth="Infinity" fx:id="btnContacto" onAction="#contacto" style="-fx-background-color: #88bff6; -fx-cursor: hand" text="Contacto" />
         </VBox>
     </left>
 
@@ -88,16 +88,16 @@
                 <TitledPane expanded="true" text="Mis Pedidos Recientes">
                     <TableView fx:id="recentOrdersTable" prefHeight="200">
                         <columns>
-                            <TableColumn prefWidth="100" text="Nº Pedido" />
-                            <TableColumn prefWidth="100" text="Fecha" />
-                            <TableColumn prefWidth="100" text="Total" />
-                            <TableColumn prefWidth="150" text="Estado" />
+                            <TableColumn fx:id="pedidoColumn" prefWidth="100" text="Nº Pedido" />
+                            <TableColumn fx:id="fechaColumn" prefWidth="100" text="Fecha" />
+                            <TableColumn fx:id="totalColumn" prefWidth="100" text="Total" />
+                            <TableColumn fx:id="estadoColumn" prefWidth="150" text="Estado" />
                         </columns>
                     </TableView>
                 </TitledPane>
 
                 <TitledPane expanded="true" text="Estado de Mis Pedidos Actuales">
-                    <VBox spacing="10">
+                    <VBox fx:id="estadoPedidosVBox" spacing="10">
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label style="-fx-font-weight: bold;" text="Pedido #1234" />
                             <ProgressBar prefWidth="200" progress="0.75" />
@@ -111,9 +111,7 @@
                     </VBox>
                 </TitledPane>
 
-                <TitledPane expanded="true" text="Ofertas Especiales">
-                    <ListView fx:id="specialOffersListView" prefHeight="150" />
-                </TitledPane>
+
             </VBox>
         </ScrollPane>
     </center>
