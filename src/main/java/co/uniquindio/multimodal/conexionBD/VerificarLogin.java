@@ -2034,11 +2034,12 @@ public class VerificarLogin {
 
             try (ResultSet rs = (ResultSet) stmt.getObject(1)) {
                 while (rs.next()) {
+                    Integer productoId = rs.getInt("ID");
                     String nombre = rs.getString("Nombre");
                     String categoria = rs.getString("Categoría");
                     double precio = rs.getDouble("Precio");
                     int stock = rs.getInt("Stock");
-                    productos.add(new ProductoCatalogo(nombre, categoria, precio, stock));
+                    productos.add(new ProductoCatalogo(nombre, categoria, precio, stock, productoId));
                 }
             }
         } catch (SQLException e) {
@@ -2047,8 +2048,173 @@ public class VerificarLogin {
         return productos;
     }
 
+    /**
+     * METODO PARA BUSCAR PRODUCTOS DE LA TABLA EN LA VISTA DEL CLIENTE CATALOGO
+     * @param busqueda
+     * @param categoria
+     * @return
+     */
+
+    public List<ProductoCatalogo> buscarProductosCliente(String busqueda, String categoria) {
+        List<ProductoCatalogo> productos = new ArrayList<>();
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call BUSCAR_PRODUCTOS_CLIENTE(?, ?, ?)}")) {
+
+            // Configurar parámetros de entrada
+            stmt.setString(1, busqueda != null && !busqueda.isEmpty() ? busqueda : null);
+            stmt.setString(2, categoria != null && !categoria.isEmpty() ? categoria : "Todas");
+
+            // Configurar parámetro de salida
+            stmt.registerOutParameter(3, OracleTypes.CURSOR);
+
+            // Ejecutar procedimiento
+            stmt.execute();
+
+            // Leer el cursor de resultados
+            try (ResultSet rs = (ResultSet) stmt.getObject(3)) {
+                while (rs.next()) {
+                    String nombre = rs.getString("Nombre");
+                    String categoriaResultado = rs.getString("Categoría");
+                    double precio = rs.getDouble("Precio");
+                    int stock = rs.getInt("Stock");
+                    productos.add(new ProductoCatalogo(nombre, categoriaResultado, precio, stock, null));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productos;
+    }
+
+    /**
+     * METODO PARA AGREGAR PRODUCTO AL CARRITO VISTA CLIENTE
+     * @param clienteId
+     * @param productoId
+     * @param cantidad
+     * @return
+     */
 
 
+    public String agregarProductoCarrito(int clienteId, int productoId, int cantidad) {
+        String mensaje = "";
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call Agregar_Producto_Carrito(?, ?, ?, ?)}")) {
+
+            // Configurar los parámetros del procedimiento
+            stmt.setInt(1, clienteId);
+            stmt.setInt(2, productoId);
+            stmt.setInt(3, cantidad);
+
+            // Parámetro de salida para el mensaje
+            stmt.registerOutParameter(4, Types.VARCHAR);
+
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener el mensaje de salida
+            mensaje = stmt.getString(4);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            mensaje = "Error al agregar el producto al carrito.";
+        }
+        return mensaje;
+    }
+
+    /**
+     * CARGA LOS PRODUCTOS EXISTENTES DEL CARRITO DE COMPRAS
+     * @param clienteId
+     * @return
+     */
+
+    public List<CarritoItem> cargarCarritoCompras(int clienteId) {
+        List<CarritoItem> carritoItems = new ArrayList<>();
+
+        String query = "{ call CargarCarritoCompras(?, ?) }";
+
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall(query)) {
+
+            stmt.setInt(1, clienteId);
+            stmt.registerOutParameter(2, Types.REF_CURSOR);
+
+            stmt.execute();
+
+            try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
+                while (rs.next()) {
+                    Integer productoId = rs.getInt("ProductoID"); // Asegúrate de usar el alias correcto
+                    String nombre = rs.getString("Nombre");
+                    Integer cantidad = rs.getInt("Cantidad");
+                    Double total = rs.getDouble("Total");
+
+                    carritoItems.add(new CarritoItem(productoId, nombre, cantidad, total));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return carritoItems;
+    }
+
+
+    /**
+     * METODO PARA ELIMINAR UN PRODUCTO DEL CARRITO DE COMPRAS
+     * @param clienteId
+     * @param productoId
+     * @return
+     */
+
+    public String eliminarProductoCarrito(int clienteId, int productoId) {
+        String mensaje = "";
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call Eliminar_Producto_Carrito(?, ?, ?)}")) {
+
+            // Parámetros de entrada
+            stmt.setInt(1, clienteId);
+            stmt.setInt(2, productoId);
+
+            // Parámetro de salida
+            stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
+
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener el mensaje de salida
+            mensaje = stmt.getString(3);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            mensaje = "Error al eliminar el producto del carrito.";
+        }
+        return mensaje;
+    }
+
+    /**
+     * REALIZA EL PEDIDO DE LOS PRODUCTOS EN EL CARRITO DE COMPRAS
+     * @param clienteId
+     * @param vendedorId
+     * @return
+     */
+
+    public String realizarPedido(int clienteId, int vendedorId) {
+        String mensaje = "";
+        try (Connection connection = getConnection();
+             CallableStatement stmt = connection.prepareCall("{call Realizar_Pedido_Cliente(?, ?, ?)}")) {
+
+            stmt.setInt(1, clienteId);
+            stmt.setInt(2, vendedorId);
+            stmt.registerOutParameter(3, Types.VARCHAR);
+
+            stmt.execute();
+            mensaje = stmt.getString(3);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            mensaje = "Error al realizar el pedido.";
+        }
+        return mensaje;
+    }
 
 
 

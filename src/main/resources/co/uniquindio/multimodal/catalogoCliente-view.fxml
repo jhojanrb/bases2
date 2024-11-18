@@ -39,6 +39,7 @@
                     </items>
                 </ComboBox>
                 <Button fx:id="btnBuscar" onAction="#buscarProductos" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Buscar" />
+                <Button fx:id="btnLimpiar" onAction="#limpiarFiltro" style="-fx-background-color: #6ba4e7; -fx-cursor: hand" text="Limpiar Filtros y Refrescar Carrito" />
             </HBox>
         </VBox>
     </top>
@@ -89,7 +90,7 @@
                             </ImageView>
                             <Label fx:id="namePro4" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
                             <Label fx:id="precio4" text="249.99" />
-                            <Button fx:id="añadir4" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                            <Button fx:id="añadir4" onAction="#añadirCarro4" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <ImageView fx:id="imagePro5" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -97,7 +98,7 @@
                             </ImageView>
                             <Label fx:id="namePro5" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
                             <Label fx:id="precio5" text="249.99" />
-                            <Button fx:id="añadir5" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                            <Button fx:id="añadir5" onAction="#añadirCarro5" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="1">
                             <ImageView fx:id="imagePro6" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -105,7 +106,7 @@
                             </ImageView>
                             <Label fx:id="namePro6" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
                             <Label fx:id="precio6" text="249.99" />
-                            <Button fx:id="añadir6" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                            <Button fx:id="añadir6" onAction="#añadirCarro6" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="0" GridPane.rowIndex="2">
                             <ImageView fx:id="imagePro7" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -113,7 +114,7 @@
                             </ImageView>
                             <Label fx:id="namePro7" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
                             <Label fx:id="precio7" text="249.99" />
-                            <Button fx:id="añadir7" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                            <Button fx:id="añadir7" onAction="#añadirCarro7" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <ImageView fx:id="imagePro8" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -121,7 +122,7 @@
                             </ImageView>
                             <Label fx:id="namePro8" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
                             <Label fx:id="precio8" text="249.99" />
-                            <Button fx:id="añadir8" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                            <Button fx:id="añadir8" onAction="#añadirCarro8" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="2">
                             <ImageView fx:id="imagePro9" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -129,7 +130,7 @@
                             </ImageView>
                             <Label fx:id="namePro9" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
                             <Label fx:id="precio9" text="249.99" />
-                            <Button fx:id="añadir9" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                            <Button fx:id="añadir9" onAction="#añadirCarro9" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="0" GridPane.rowIndex="3">
                             <ImageView fx:id="imagePro10" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -137,7 +138,7 @@
                             </ImageView>
                             <Label fx:id="namePro10" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
                             <Label fx:id="precio10" text="249.99" />
-                            <Button fx:id="añadir10" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                            <Button fx:id="añadir10" onAction="#añadirCarro10" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="3">
                             <ImageView fx:id="imagePro11" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -145,7 +146,7 @@
                             </ImageView>
                             <Label fx:id="namePro11" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
                             <Label fx:id="precio11" text="249.99" />
-                            <Button fx:id="añadir11" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                            <Button fx:id="añadir11" onAction="#añadirCarro11" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="3">
                             <ImageView fx:id="imagePro12" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -153,7 +154,7 @@
                             </ImageView>
                             <Label fx:id="namePro12" style="-fx-font-weight: bold;" text="Smartwatch Pro" />
                             <Label fx:id="precio12" text="249.99" />
-                            <Button fx:id="añadir12" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
+                            <Button fx:id="añadir12" onAction="#añadirCarro12" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                     </GridPane>
                 </TitledPane>
@@ -168,6 +169,7 @@
                         </columns>
                     </TableView>
                 </TitledPane>
+            <Button fx:id="btnAñadirCarritoTabla" onAction="#añadirCarritoTabla" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
             </VBox>
         </ScrollPane>
     </center>
@@ -176,8 +178,9 @@
         <VBox spacing="10" style="-fx-padding: 10; -fx-background-color: #ecf0f1;">
             <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Carrito de Compras" />
             <ListView fx:id="carritoListView" VBox.vgrow="ALWAYS" />
-            <Label fx:id="totalLabel" style="-fx-font-weight: bold;" text="Total: $0.00" />
+            <Label fx:id="totalLabel" style="-fx-font-weight: bold;" text="Total a Pagar: $0.00" />
             <Button fx:id="btnRealizarPedido" onAction="#realizarPedido" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Realizar Pedido" />
+            <Button fx:id="btnEliminar" onAction="#eliminarProducto" style="-fx-background-color: #ff1b00; -fx-cursor: hand" text="Eliminar" />
         </VBox>
     </right>
 
