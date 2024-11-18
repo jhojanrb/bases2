@@ -2216,6 +2216,141 @@ public class VerificarLogin {
         return mensaje;
     }
 
+    /**
+     * OBTIENE LOS PEDIDOS DEL CLIENTE EN LA TABLA DE MIS PEDIDOS
+     * @param vendedorId
+     * @return
+     */
+
+    public List<Pedido> obtenerMisPedidos(int vendedorId) {
+        List<Pedido> pedidos = new ArrayList<>();
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            // Cambiar a OracleDBConnection
+            connection = OracleDBConnection.getConnection();
+            callableStatement = connection.prepareCall("{CALL Obtener_Pedidos_Cliente(?, ?)}");
+            callableStatement.setInt(1, vendedorId);
+            callableStatement.registerOutParameter(2, OracleTypes.CURSOR);
+            callableStatement.execute();
+
+            resultSet = (ResultSet) callableStatement.getObject(2);
+
+            while (resultSet.next()) {
+                int idPedido = resultSet.getInt("ID Pedido");
+                Date fecha = resultSet.getDate("Fecha");
+                double total = resultSet.getDouble("Total");
+                String estado = resultSet.getString("Estado");
+
+                pedidos.add(new Pedido(idPedido, fecha, total, estado));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (callableStatement != null) callableStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return pedidos;
+    }
+
+    /**
+     * METODO PARA CANCELAR UN PEDIDO DE LA TABLA MIS PEDIDOS DEL CLIENTE
+     * @param idVenta
+     * @return
+     */
+
+    public String cancelarPedido(int idVenta) {
+        String mensaje = "";
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+
+        try {
+            connection = OracleDBConnection.getConnection();
+            callableStatement = connection.prepareCall("{CALL Cancelar_Pedido(?, ?)}");
+            callableStatement.setInt(1, idVenta); // Parámetro del ID de la venta
+            callableStatement.registerOutParameter(2, java.sql.Types.VARCHAR); // Mensaje de salida
+
+            callableStatement.execute();
+            mensaje = callableStatement.getString(2); // Obtener el mensaje de salida
+        } catch (SQLException e) {
+            e.printStackTrace();
+            mensaje = "Error al conectar con la base de datos.";
+        } finally {
+            try {
+                if (callableStatement != null) callableStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return mensaje;
+    }
+
+    /**
+     * BUSCAR PEDIDOS DE LA TABLA MISPEDIDOS
+     * @param clienteId
+     * @param busqueda
+     * @param estado
+     * @param fecha
+     * @return
+     */
+
+    public List<Pedido> buscarPedidos(int clienteId, String busqueda, String estado, Date fecha) {
+        List<Pedido> pedidos = new ArrayList<>();
+        Connection connection = null;
+        CallableStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            connection = OracleDBConnection.getConnection();
+            String sql = "{CALL Buscar_MisPedidos(?, ?, ?, ?, ?)}";
+            stmt = connection.prepareCall(sql);
+
+            stmt.setInt(1, clienteId);
+            stmt.setString(2, busqueda);
+            stmt.setString(3, estado);
+            if (fecha != null) {
+                stmt.setDate(4, new java.sql.Date(fecha.getTime()));
+            } else {
+                stmt.setNull(4, java.sql.Types.DATE);
+            }
+            stmt.registerOutParameter(5, OracleTypes.CURSOR);
+
+            stmt.execute();
+            rs = (ResultSet) stmt.getObject(5);
+
+            while (rs.next()) {
+                Pedido pedido = new Pedido(
+                        rs.getInt("ID"),
+                        rs.getDate("Fecha"),
+                        rs.getDouble("Total"),
+                        rs.getString("Estado")
+                );
+                pedidos.add(pedido);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return pedidos;
+    }
+
 
 
     /**

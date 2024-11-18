@@ -288,6 +288,34 @@ public class HomeClienteController {
     @FXML
     void pedidos(ActionEvent event) {
 
+        try {
+            // Cargar la interfaz de inicio de sesión
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("clientePedidos-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            // Obtener el tamaño de la pantalla completa
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Crear un nuevo Stage y establecer la nueva escena con las dimensiones de la pantalla
+            Stage newStage = new Stage();
+            newStage.setTitle("Mis Pedidos");
+            newStage.setScene(scene);
+            newStage.setX(screenBounds.getMinX());
+            newStage.setY(screenBounds.getMinY());
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+            // Mostrar el nuevo Stage en pantalla completa
+            newStage.show();
+
+            // Cerrar el Stage actual si es necesario
+            Stage currentStage = (Stage) btnMisPedidos.getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al cargar la interfaz de inicio de sesión.");
+        }
+
     }
 
     @FXML

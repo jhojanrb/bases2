@@ -21,9 +21,9 @@
     </TableView>
 
     <HBox alignment="CENTER_RIGHT" spacing="10">
-        <Button fx:id="btnAprobar" onAction="#aprobarSeleccionados" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-cursor: hand" text="Aprobar Seleccionados" />
-        <Button fx:id="btnRechazar" onAction="#rechazarSeleccionados" style="-fx-background-color: #ff8100; -fx-text-fill: white; -fx-cursor: hand" text="Rechazar Seleccionados" />
-        <Button fx:id="btnCerrar" onAction="#cerrarPopup" style="-fx-background-color: #ff1b00; -fx-text-fill: white; -fx-cursor: hand" text="Cerrar" />
+        <Button fx:id="btnAprobar" onAction="#aprobarSeleccionados" style="-fx-background-color: #2ecc71; -fx-text-fill: black; -fx-cursor: hand" text="Aprobar Seleccionados" />
+        <Button fx:id="btnRechazar" onAction="#rechazarSeleccionados" style="-fx-background-color: #ff8100; -fx-text-fill: black; -fx-cursor: hand" text="Rechazar Seleccionados" />
+        <Button fx:id="btnCerrar" onAction="#cerrarPopup" style="-fx-background-color: #ff1b00; -fx-text-fill: black; -fx-cursor: hand" text="Cerrar" />
     </HBox>
 
 </VBox>

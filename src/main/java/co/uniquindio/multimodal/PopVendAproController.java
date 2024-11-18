@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -86,17 +87,34 @@ public class PopVendAproController {
     void aprobarSeleccionados(ActionEvent event) {
         // Aprobar cada vendedor seleccionado en la tabla
         ObservableList<Vendedor> seleccionados = vendedoresTable.getSelectionModel().getSelectedItems();
+
+        if (seleccionados.isEmpty()) {
+            mostrarAlerta("Advertencia", "No se seleccionaron vendedores para aprobar.", Alert.AlertType.WARNING);
+            return;
+        }
+
         for (Vendedor vendedor : seleccionados) {
             verificarLogin.aprobarVendedor(vendedor.getIdVendedor());
 
-            // Mostrar JOptionPane de confirmación para cada vendedor aprobado
-            JOptionPane.showMessageDialog(null,
-                    "Vendedor aprobado:\nID: " + vendedor.getIdVendedor() + "\nNombre: " + vendedor.getNombre(),
+            // Mostrar alerta de confirmación para cada vendedor aprobado
+            mostrarAlerta(
                     "Aprobación Exitosa",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    "Vendedor aprobado:\nID: " + vendedor.getIdVendedor() + "\nNombre: " + vendedor.getNombre(),
+                    Alert.AlertType.INFORMATION
+            );
         }
         cargarSolicitudesPen(); // Refrescar la tabla después de aprobar
     }
+
+    // Método para mostrar alertas
+    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipoAlerta) {
+        Alert alert = new Alert(tipoAlerta);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
 
     @FXML
     void rechazarSeleccionados(ActionEvent event) {
