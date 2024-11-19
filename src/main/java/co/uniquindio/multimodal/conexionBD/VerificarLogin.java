@@ -2351,6 +2351,223 @@ public class VerificarLogin {
         return pedidos;
     }
 
+    /**
+     * EXPORTAR LISTA DE VENDEDORES A PDF
+     * @param filePath
+     * @param vendedores Lista de vendedores a exportar
+     * @throws DocumentException
+     * @throws IOException
+     */
+    public void exportarVendedoresPDF(String filePath, List<Vendedor> vendedores) throws DocumentException, IOException {
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        document.open();
+
+        // Título
+        document.add(new Paragraph("Lista de Vendedores", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
+        document.add(Chunk.NEWLINE);
+
+        // Crear tabla PDF con las columnas de vendedor
+        PdfPTable table = new PdfPTable(5); // Número de columnas
+        table.setWidthPercentage(100);
+
+        // Añadir encabezados de columna
+        table.addCell("ID");
+        table.addCell("Nombre");
+        table.addCell("Email");
+        table.addCell("Nivel");
+        table.addCell("Estado");
+
+        // Llenar la tabla con los datos de vendedores
+        for (Vendedor vendedor : vendedores) {
+            table.addCell(String.valueOf(vendedor.getIdVendedor()));
+            table.addCell(vendedor.getNombre());
+            table.addCell(vendedor.getEmail());
+            table.addCell(vendedor.getNivel());
+            table.addCell(vendedor.getEstadoVendedor());
+        }
+
+        // Agregar la tabla al documento
+        document.add(table);
+        document.close();
+    }
+
+    /**
+     * EXPORTAR HISTORIAL DE PROMOCIONES A PDF
+     * @param filePath
+     * @param promociones Lista de promociones a exportar
+     * @throws DocumentException
+     * @throws IOException
+     */
+    public void exportarHistorialPromocionesPDF(String filePath, List<Promocion> promociones) throws DocumentException, IOException {
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        document.open();
+
+        // Título
+        document.add(new Paragraph("Historial de Promociones", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
+        document.add(Chunk.NEWLINE);
+
+        // Crear tabla PDF con las columnas de promociones
+        PdfPTable table = new PdfPTable(7); // Número de columnas
+        table.setWidthPercentage(100);
+
+        // Añadir encabezados de columna
+        table.addCell("ID");
+        table.addCell("Inicio");
+        table.addCell("Fin");
+        table.addCell("GOLD %");
+        table.addCell("PLATE %");
+        table.addCell("BRONZE %");
+        table.addCell("PLATINO %");
+
+        // Llenar la tabla con los datos de promociones
+        for (Promocion promocion : promociones) {
+            table.addCell(String.valueOf(promocion.getNombre()));
+            table.addCell(promocion.getInicio().toString());
+            table.addCell(promocion.getFin().toString());
+            table.addCell(String.valueOf(promocion.getGoldPorcentaje()));
+            table.addCell(String.valueOf(promocion.getPlatePorcentaje()));
+            table.addCell(String.valueOf(promocion.getBronzePorcentaje()));
+            table.addCell(String.valueOf(promocion.getPlatinoPorcentaje()));
+        }
+
+        // Agregar la tabla al documento
+        document.add(table);
+        document.close();
+    }
+
+    /**
+     * EXPORTAR LISTA DE PRODUCTOS A PDF
+     * @param filePath Ruta del archivo de destino
+     * @param productos Lista de productos a exportar
+     * @throws DocumentException
+     * @throws IOException
+     */
+    public void exportarProductosPDF(String filePath, List<Producto> productos) throws DocumentException, IOException {
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        document.open();
+
+        // Título
+        document.add(new Paragraph("Lista de Productos", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
+        document.add(Chunk.NEWLINE);
+
+        // Crear tabla PDF con las columnas de productos
+        PdfPTable table = new PdfPTable(5); // Número de columnas
+        table.setWidthPercentage(100);
+
+        // Añadir encabezados de columna
+        table.addCell("ID");
+        table.addCell("Nombre");
+        table.addCell("Categoría");
+        table.addCell("Precio");
+        table.addCell("Stock");
+
+        // Llenar la tabla con los datos de productos
+        for (Producto producto : productos) {
+            table.addCell(String.valueOf(producto.getId()));
+            table.addCell(producto.getNombre());
+            table.addCell(producto.getCategoria());
+            table.addCell(String.format("$ %.2f", producto.getPrecio()));
+            table.addCell(String.valueOf(producto.getStock()));
+        }
+
+        // Agregar la tabla al documento
+        document.add(table);
+        document.close();
+    }
+
+
+    /**
+     * EXPORTAR LISTA DE PRODUCTOS CON COMISIÓN A PDF
+     * @param filePath Ruta del archivo de destino
+     * @param productos Lista de productos a exportar
+     * @throws DocumentException
+     * @throws IOException
+     */
+    public void exportarProductosConComisionPDF(String filePath, List<ProductoConComision> productos) throws DocumentException, IOException {
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        document.open();
+
+        // Título
+        document.add(new Paragraph("Lista de Productos con Comisión", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
+        document.add(Chunk.NEWLINE);
+
+        // Crear tabla PDF con las columnas de productos
+        PdfPTable table = new PdfPTable(6); // Número de columnas
+        table.setWidthPercentage(100);
+
+        // Añadir encabezados de columna
+        table.addCell("ID");
+        table.addCell("Nombre");
+        table.addCell("Categoría");
+        table.addCell("Precio");
+        table.addCell("Comisión");
+        table.addCell("Stock Disponible");
+
+        // Llenar la tabla con los datos de productos
+        for (ProductoConComision producto : productos) {
+            table.addCell(String.valueOf(producto.getId()));
+            table.addCell(producto.getNombre());
+            table.addCell(producto.getCategoria());
+            table.addCell(String.format("$ %.2f", producto.getPrecio()));
+            table.addCell(String.format("%.2f%%", producto.getComisionPromedio()));
+            table.addCell(String.valueOf(producto.getStock()));
+        }
+
+        // Agregar la tabla al documento
+        document.add(table);
+        document.close();
+    }
+
+
+    /**
+     * EXPORTAR LISTA DE AFILIADOS A PDF
+     * @param filePath Ruta del archivo de destino
+     * @param afiliados Lista de afiliados a exportar
+     * @throws DocumentException
+     * @throws IOException
+     */
+    public void exportarAfiliadosPDF(String filePath, List<Afiliado> afiliados) throws DocumentException, IOException {
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        document.open();
+
+        // Título
+        document.add(new Paragraph("Lista de Afiliados", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
+        document.add(Chunk.NEWLINE);
+
+        // Crear tabla PDF con las columnas de afiliados
+        PdfPTable table = new PdfPTable(6); // Número de columnas
+        table.setWidthPercentage(100);
+
+        // Añadir encabezados de columna
+        table.addCell("ID");
+        table.addCell("Nombre");
+        table.addCell("Nivel");
+        table.addCell("Fecha de Afiliación");
+        table.addCell("Ventas Totales");
+        table.addCell("Comisiones Generadas");
+
+        // Llenar la tabla con los datos de afiliados
+        for (Afiliado afiliado : afiliados) {
+            table.addCell(String.valueOf(afiliado.getId()));
+            table.addCell(afiliado.getNombre());
+            table.addCell(afiliado.getNivel());
+            table.addCell(afiliado.getFechaAfiliacion().toString());
+            table.addCell(String.format("$ %.2f", afiliado.getVentasTotales()));
+            table.addCell(String.format("$ %.2f", afiliado.getComisionesGeneradas()));
+        }
+
+        // Agregar la tabla al documento
+        document.add(table);
+        document.close();
+    }
+
+
+
 
 
     /**

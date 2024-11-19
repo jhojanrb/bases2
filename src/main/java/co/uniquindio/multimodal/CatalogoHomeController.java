@@ -11,6 +11,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,8 +22,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -352,6 +358,53 @@ public class CatalogoHomeController {
 
     @FXML
     void exportarCatalogo(ActionEvent event) {
+
+        // Ruta de guardado
+        String rutaArchivo = "C:\\2024-2\\bases 2\\PROYECTO\\reportes\\Administrador\\lista_productos.pdf";
+
+        try {
+            // Obtener la lista de productos desde la tabla
+            ObservableList<Producto> productosObservable = productosTable.getItems();
+            List<Producto> productos = new ArrayList<>(productosObservable);
+
+            // Llama al método de exportación en VerificarLogin
+            VerificarLogin verificarLogin = new VerificarLogin();
+            verificarLogin.exportarProductosPDF(rutaArchivo, productos);
+
+            // Mostrar alerta de éxito
+            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+            alerta.setTitle("Exportación Exitosa");
+            alerta.setHeaderText(null);
+            alerta.setContentText("La lista de productos se ha exportado correctamente.");
+
+            // Agregar botones personalizados
+            ButtonType abrirArchivo = new ButtonType("Ir al Archivo");
+            ButtonType masTarde = new ButtonType("Más Tarde", ButtonBar.ButtonData.CANCEL_CLOSE);
+            alerta.getButtonTypes().setAll(abrirArchivo, masTarde);
+
+            // Manejar la respuesta del usuario
+            alerta.showAndWait().ifPresent(response -> {
+                if (response == abrirArchivo) {
+                    try {
+                        // Abrir el archivo en el explorador
+                        File archivo = new File("C:\\2024-2\\bases 2\\PROYECTO\\reportes\\Administrador");
+                        if (archivo.exists()) {
+                            Desktop.getDesktop().open(archivo);
+                        } else {
+                            mostrarAlerta("Error", "La carpeta de destino no existe.", Alert.AlertType.ERROR);
+                        }
+                    } catch (IOException e) {
+                        mostrarAlerta("Error", "No se pudo abrir la carpeta de destino.", Alert.AlertType.ERROR);
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            // Manejar errores en la exportación
+            mostrarAlerta("Error", "Ocurrió un error al exportar la lista: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
 
     }
 

@@ -9,6 +9,8 @@ module co.uniquindio.multimodal {
     requires itextpdf;
     requires java.mail;
     requires java.http.client;
+    requires kernel;
+    requires layout;
 
 
     opens co.uniquindio.multimodal to javafx.fxml;

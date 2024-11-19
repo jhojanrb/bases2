@@ -92,7 +92,7 @@
 
                         <HBox alignment="CENTER" spacing="10">
                             <Button fx:id="btnGenerarInforme" onAction="#generarInformeRed" style="-fx-background-color: #3498db; -fx-cursor: hand" text="Generar Informe" />
-                            <Button fx:id="btnExportarDatos" onAction="#exportarDatosRed" style="-fx-background-color: #27ae60; -fx-cursor: hand" text="Exportar Datos" />
+                            <Button fx:id="btnExportarDatos" onAction="#exportarDatosRed" style="-fx-background-color: #27ae60; -fx-cursor: hand" text="Exportar Afiliados" />
                         </HBox>
                     </VBox>
                 </TitledPane>

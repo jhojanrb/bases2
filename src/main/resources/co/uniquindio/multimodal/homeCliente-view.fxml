@@ -64,7 +64,7 @@
                             </ImageView>
                             <Label fx:id="namePro1" style="-fx-font-weight: bold;" text="Producto 1" />
                             <Label fx:id="precio1" text="19.99" />
-                            <Button fx:id="añadir1" onAction="#añadirCarro1" style="-fx-background-color: #2ecc71;" text="Añadir al Carrito" />
+                            <Button fx:id="añadir1" onAction="#añadirCarro1" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="1">
                             <ImageView fx:id="imagePro2" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -72,7 +72,7 @@
                             </ImageView>
                             <Label fx:id="namePro2" style="-fx-font-weight: bold;" text="Producto 2" />
                             <Label fx:id="precio2" text="24.99" />
-                            <Button fx:id="añadir2" onAction="#añadirCarro2" style="-fx-background-color: #2ecc71;" text="Añadir al Carrito" />
+                            <Button fx:id="añadir2" onAction="#añadirCarro2" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                         <VBox alignment="CENTER" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5;" GridPane.columnIndex="2">
                             <ImageView fx:id="imagePro3" fitHeight="100" fitWidth="100" preserveRatio="true">
@@ -80,7 +80,7 @@
                             </ImageView>
                             <Label fx:id="namePro3" style="-fx-font-weight: bold;" text="Producto 3" />
                             <Label fx:id="precio3" text="29.99" />
-                            <Button fx:id="añadir3" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71;" text="Añadir al Carrito" />
+                            <Button fx:id="añadir3" onAction="#añadirCarro3" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Añadir al Carrito" />
                         </VBox>
                     </GridPane>
                 </TitledPane>

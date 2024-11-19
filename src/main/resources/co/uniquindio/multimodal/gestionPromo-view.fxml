@@ -96,6 +96,7 @@
                             <TableColumn fx:id="platinoHistorialColumna" text="PLATINO %" />
                         </columns>
                     </TableView>
+               <Button fx:id="btnExportar" onAction="#exportar" style="-fx-background-color: #ff8100; -fx-cursor: hand" text="Exportar Historial" />
                 </VBox>
             </Tab>
         </TabPane>

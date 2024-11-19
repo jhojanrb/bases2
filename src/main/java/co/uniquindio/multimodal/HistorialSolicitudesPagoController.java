@@ -168,7 +168,7 @@ public class HistorialSolicitudesPagoController {
     void exportarHistorial(ActionEvent event) {
 
         // Ruta de guardado
-        String rutaArchivo = "C:\\2024-2\\bases 2\\PROYECTO\\reportes\\historial_solicitudes_pago.pdf";
+        String rutaArchivo = "C:\\2024-2\\bases 2\\PROYECTO\\reportes\\Administrador\\historial_solicitudes_pago.pdf";
 
         try {
             // Llama al método de exportación en VerificarLogin
@@ -191,7 +191,7 @@ public class HistorialSolicitudesPagoController {
                 if (response == abrirArchivo) {
                     try {
                         // Abrir el archivo en el explorador
-                        File archivo = new File("C:\\2024-2\\bases 2\\PROYECTO\\reportes");
+                        File archivo = new File("C:\\2024-2\\bases 2\\PROYECTO\\reportes\\Administrador");
                         if (archivo.exists()) {
                             Desktop.getDesktop().open(archivo);
                         } else {

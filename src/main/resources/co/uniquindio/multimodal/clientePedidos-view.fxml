@@ -16,17 +16,17 @@
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Todos" />
-                            <String fx:value="Pendiente" />
+                            <String fx:value="En transito" />
                             <String fx:value="En proceso" />
                             <String fx:value="Enviado" />
-                            <String fx:value="Entregado" />
+                            <String fx:value="Completado" />
                             <String fx:value="Cancelado" />
                         </FXCollections>
                     </items>
                 </ComboBox>
                 <DatePicker fx:id="fechaInicioPicker" promptText="Fecha" />
                 <Button fx:id="btnBuscar" onAction="#buscarPedidos" style="-fx-background-color: #2ecc71; -fx-cursor: hand" text="Buscar" />
-                <Button fx:id="btnLimpiarFiltros" onAction="#limpiarFiltros" style="-fx-background-color: #e74c3c; -fx-cursor: hand" text="Limpiar Filtros" />
+                <Button fx:id="btnLimpiarFiltros" onAction="#limpiarFiltros" style="-fx-background-color: #6ba4e7; -fx-cursor: hand" text="Limpiar Filtros" />
             </HBox>
         </VBox>
     </top>
